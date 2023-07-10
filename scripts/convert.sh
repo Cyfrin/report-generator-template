@@ -10,6 +10,7 @@ pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/assisting_auditor
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/about_cyfrin.md -o ./working/about_cyfrin.tex
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/disclaimer.md -o ./working/disclaimer.tex
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/protocol_summary.md -o ./working/protocol_summary.tex
+pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/audit_scope.md -o ./working/audit_scope.tex
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/report.md -o ./working/report.tex
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/additional_comments.md -o ./working/additional_comments.tex
 pandoc --filter ./scripts/pandoc-minted.py --from gfm ./source/appendix.md -o ./working/appendix.tex
