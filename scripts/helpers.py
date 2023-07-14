@@ -2,6 +2,7 @@ import configparser
 from datetime import timedelta
 from dateutil.parser import parse
 import math
+from os.path import exists as check_file
 import os
 import re
 import subprocess
@@ -349,12 +350,12 @@ def get_severity_counts():
 
 def edit_report_md():
     with open(LEAD_AUDITORS, 'r') as lead_auditors, open(ASSISTING_AUDITORS, 'r') as assisting_auditors, open(OUTPUT_REPORT, 'r') as output_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
+        solodit_report.write('**Lead Auditors**\n\n')
         for line in lead_auditors:
             solodit_report.write(line)
+        solodit_report.write('\n**Assisting Auditors**\n\n')
         for line in assisting_auditors:
             solodit_report.write(line)
-        solodit_report.write('\n---\n')
+        solodit_report.write('\n\n---\n\n# Findings\n')
         for line in output_report:
             solodit_report.write(line)
-    os.remove(OUTPUT_REPORT)
-    os.rename(OUTPUT_SOLODIT, OUTPUT_REPORT)

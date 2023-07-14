@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-${{ github.event.repository.name }}.md
-          path: ./${{ inputs.generator-path }}/source/report.md
+          path: ./${{ inputs.generator-path }}/source/solodit_report.md
 
       - name: Upload the report PDF
         uses: actions/upload-artifact@v3
