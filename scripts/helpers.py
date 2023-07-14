@@ -2,13 +2,16 @@ import configparser
 from datetime import timedelta
 from dateutil.parser import parse
 import math
-from os.path import exists as check_file
+import os
 import re
 import subprocess
 
 # Define file paths
 OUTPUT_PATH = './source/'
 OUTPUT_REPORT = OUTPUT_PATH + 'report.md'
+OUTPUT_SOLODIT = OUTPUT_PATH + 'solodit_report.md'
+LEAD_AUDITORS = './source/lead_auditors.md'
+ASSISTING_AUDITORS = './source/assisting_auditors.md'
 SEVERITY_COUNTS = OUTPUT_PATH + 'severity_counts.conf'
 SUMMARY_TEX = './templates/summary.tex'
 SUMMARY_INFORMATION = OUTPUT_PATH + 'summary_information.conf'
@@ -343,3 +346,15 @@ def get_severity_counts():
     #        counts[key] = 0
     
     return counts
+
+def edit_report_md():
+    with open(LEAD_AUDITORS, 'r') as lead_auditors, open(ASSISTING_AUDITORS, 'r') as assisting_auditors, open(OUTPUT_REPORT, 'r') as output_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
+        for line in lead_auditors:
+            solodit_report.write(line)
+        for line in assisting_auditors:
+            solodit_report.write(line)
+        solodit_report.write('\n---\n')
+        for line in output_report:
+            solodit_report.write(line)
+    os.remove(OUTPUT_REPORT)
+    os.rename(OUTPUT_SOLODIT, OUTPUT_REPORT)

@@ -74,5 +74,7 @@ print("Generating report PDF file ...")
 with open("./working/generation.log", "w") as log:
     # This is actually repeated by the GitHub Action, but it's useful to have it here for running locally
     subprocess.call("./scripts/generate.sh", stdout=log, stderr=log)
+# Edit the report markdown for Solodit, after everything else is complete
+helpers.edit_report_md()
 print(f"\nAll tasks completed. Report should be in the 'output' folder.")
 print(f"If it wasn't generated, check 'working/conversion.log' and 'working/generation.log'.")
