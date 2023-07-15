@@ -4,3 +4,6 @@
 
 git subtree pull --prefix cyfrin-report/report-generator-template https://github.com/Cyfrin/report-generator-template main --squash
 cp cyfrin-report/report-generator-template/.github/workflows/main.yml .github/workflows/main.yml
+git add .github/workflows/main.yml
+git commit -m "update workflow"
+git push
