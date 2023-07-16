@@ -8,14 +8,16 @@ import re
 import subprocess
 
 # Define file paths
-OUTPUT_PATH = './source/'
-OUTPUT_REPORT = OUTPUT_PATH + 'report.md'
+SOURCE_PATH = './source/'
+OUTPUT_PATH = './output/'
+SOURCE_REPORT = SOURCE_PATH + 'report.md'
 OUTPUT_SOLODIT = OUTPUT_PATH + 'solodit_report.md'
 LEAD_AUDITORS = './source/lead_auditors.md'
 ASSISTING_AUDITORS = './source/assisting_auditors.md'
 SEVERITY_COUNTS = OUTPUT_PATH + 'severity_counts.conf'
 SUMMARY_TEX = './templates/summary.tex'
 SUMMARY_INFORMATION = OUTPUT_PATH + 'summary_information.conf'
+MITIGATION_TABLE = OUTPUT_PATH + 'mitigation_table.csv'
 
 # Possible severity labels from github issues
 SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Informational', 'Severity: Gas Optimization']
@@ -177,7 +179,7 @@ def get_issues(repository, github):
 
     issue_dict = replace_internal_links(issue_dict, issues_by_number)
 
-    with open(OUTPUT_REPORT, "w") as report:
+    with open(SOURCE_REPORT, "w") as report:
         for label in SEVERITY_LABELS:
             # Do nothing if there are no issues with this label
             if get_issue_count(issue_dict, label) == 0:
@@ -203,6 +205,7 @@ def get_issues(repository, github):
         summary_tex_content = summary_file.read()
         
     summary_findings_table = ""
+    mitigation_table = f"Name,Status,{get_summary_information()['team_name']},Cyfrin"
     for label in SEVERITY_LABELS:
         # Do nothing if there are no issues with this label
         if get_issue_count(issue_dict, label) == 0:
@@ -211,12 +214,15 @@ def get_issues(repository, github):
         fill = math.ceil(math.log10(count_by_severity[label]))
         prefix = f"{label[10:11]}-"
 
+        mitigation_table += f"{label.split()[1]},,,"
+
         # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
             prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
+            mitigation_table += f"{issue_title},{status_label},,"
 
     # Replace the placeholder in the SUMMARY_TEX file
     placeholder_start = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START"
@@ -244,6 +250,9 @@ def get_issues(repository, github):
             
     with open(SUMMARY_TEX, "w") as summary_file:
         summary_file.write(updated_summary_tex_content)
+
+    with open(MITIGATION_TABLE, "w") as mitigation_file:
+        mitigation_file.write(mitigation_table)
 
     return total_count
 
@@ -349,7 +358,7 @@ def get_severity_counts():
     return counts
 
 def edit_report_md():
-    with open(LEAD_AUDITORS, 'r') as lead_auditors, open(ASSISTING_AUDITORS, 'r') as assisting_auditors, open(OUTPUT_REPORT, 'r') as output_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
+    with open(LEAD_AUDITORS, 'r') as lead_auditors, open(ASSISTING_AUDITORS, 'r') as assisting_auditors, open(SOURCE_REPORT, 'r') as source_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
         solodit_report.write('**Lead Auditors**\n\n')
         for line in lead_auditors:
             solodit_report.write(line)
@@ -357,5 +366,6 @@ def edit_report_md():
         for line in assisting_auditors:
             solodit_report.write(line)
         solodit_report.write('\n\n---\n\n# Findings\n')
-        for line in output_report:
+        for line in source_report:
             solodit_report.write(line)
+            
