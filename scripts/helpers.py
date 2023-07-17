@@ -214,7 +214,7 @@ def get_issues(repository, github):
         fill = math.ceil(math.log10(count_by_severity[label]))
         prefix = f"{label[10:11]}-"
 
-        mitigation_table += f"{label.split()[1]},,,\n"
+        mitigation_table += f"{label.split()[1].upper()},,,\n"
 
         # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
