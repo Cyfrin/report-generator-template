@@ -10,13 +10,13 @@ import subprocess
 # Define file paths
 SOURCE_PATH = './source/'
 OUTPUT_PATH = './output/'
-SOURCE_REPORT = SOURCE_PATH + 'report.md'
-OUTPUT_SOLODIT = OUTPUT_PATH + 'solodit_report.md'
 LEAD_AUDITORS = './source/lead_auditors.md'
 ASSISTING_AUDITORS = './source/assisting_auditors.md'
-SEVERITY_COUNTS = OUTPUT_PATH + 'severity_counts.conf'
+SEVERITY_COUNTS = SOURCE_PATH + 'severity_counts.conf'
 SUMMARY_TEX = './templates/summary.tex'
-SUMMARY_INFORMATION = OUTPUT_PATH + 'summary_information.conf'
+SUMMARY_INFORMATION = SOURCE_PATH + 'summary_information.conf'
+SOURCE_REPORT = SOURCE_PATH + 'report.md'
+OUTPUT_SOLODIT = OUTPUT_PATH + 'solodit_report.md'
 MITIGATION_TABLE = OUTPUT_PATH + 'mitigation_table.csv'
 
 # Possible severity labels from github issues

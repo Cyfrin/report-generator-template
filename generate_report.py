@@ -43,9 +43,9 @@ REPLACE_SEVERITIES = [["__PLACEHOLDER__ISSUE_CRITICAL_COUNT", severity_count_dat
 
 # Lint the report.md
 print("Linting the report.md file ...")
-report = helpers.get_file_contents(helpers.OUTPUT_REPORT)
+report = helpers.get_file_contents(helpers.SOURCE_REPORT)
 report = linter.lint(report, summary_data['team_name'], source_org, "Cyfrin")
-helpers.save_file_contents(helpers.OUTPUT_REPORT, report)
+helpers.save_file_contents(helpers.SOURCE_REPORT, report)
 print(f"Done.\n")
 
 # Convert all .md to .tex and save to working dir
