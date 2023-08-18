@@ -10,19 +10,6 @@
 \hypertarget{executive-summary}{%
 \section{Executive Summary}\label{executive-summary}}
 
-% FIXME -> PLACEHOLDERS are replace for the information in "./source/summary-information.conf"
-Over the course of __PLACEHOLDER__REVIEW_LENGTH days, the Cyfrin team conducted an audit on the 
-\href{__PLACEHOLDER__REPO_LINK}{__PLACEHOLDER__PROJECT_NAME}
-smart contracts provided by
-\href{__PLACEHOLDER__TEAM_WEBSITE}{__PLACEHOLDER__TEAM_NAME}.
-In this period, a total of __PLACEHOLDER__ISSUE_TOTAL_COUNT issues were found.
-
-% insert new line
-\bigbreak
-\input{audit_scope.tex}
-
-\vspace{1cm}
-
 % Temporarily adjust the float placement parameters
 \renewcommand{\floatpagefraction}{.8}%
 \renewcommand{\textfraction}{.1}%
@@ -32,45 +19,36 @@ In this period, a total of __PLACEHOLDER__ISSUE_TOTAL_COUNT issues were found.
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
 
-\begin{table}[H]
-  \centering
-  \caption*{\textbf{Summary}}
-  \begin{tabular}{|p{3cm}|p{6cm}|}
-    \hline
-    Project Name & __PLACEHOLDER__PROJECT_NAME \\
-    \hline
-    Repository & \href{__PLACEHOLDER__REPO_LINK}{__PLACEHOLDER__REPO_NAME} \\
-    \hline
-    Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__COMMIT_HASH}} \\
-    \hline
-    Audit Timeline & __PLACEHOLDER__AUDIT_TIMELINE \\
-    \hline
-    Methods & __PLACEHOLDER__AUDIT_METHODS \\
-    \hline
-  \end{tabular}
-\end{table}
 
-\begin{table}[H]
-  \centering
+\begin{longtable}{|p{3cm}|p{12cm}|}
+  \caption*{\textbf{Overview}}
+  \hline
+  Project Name & __PLACEHOLDER__PROJECT_NAME \\
+  \hline
+  Repository & \href{__PLACEHOLDER__REPO_LINK}{__PLACEHOLDER__REPO_NAME} \\
+  \hline
+  Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__COMMIT_HASH}} \\
+  \hline
+\end{longtable}
+
+\begin{longtable}{|p{12cm}|p{3cm}|}
   \caption*{\textbf{Issues Found}}
-  \begin{tabular}{|p{3cm}|p{6cm}|}
-    \hline
-    Critical Risk & __PLACEHOLDER__ISSUE_CRITICAL_COUNT \\
-    \hline
-    High Risk & __PLACEHOLDER__ISSUE_HIGH_COUNT \\
-    \hline
-    Medium Risk & __PLACEHOLDER__ISSUE_MEDIUM_COUNT \\ 
-    \hline
-    Low Risk & __PLACEHOLDER__ISSUE_LOW_COUNT \\
-    \hline
-    Informational & __PLACEHOLDER__ISSUE_INFORMATIONAL_COUNT \\
-    \hline
-    Gas Optimizations & __PLACEHOLDER__ISSUE_GAS_OPTIMIZATION_COUNT \\ 
-    \hline
-    Total Issues & __PLACEHOLDER__ISSUE_TOTAL_COUNT \\
-    \hline
-  \end{tabular}
-\end{table}
+  \hline
+  Critical Risk & __PLACEHOLDER__ISSUE_CRITICAL_COUNT \\
+  \hline
+  High Risk & __PLACEHOLDER__ISSUE_HIGH_COUNT \\
+  \hline
+  Medium Risk & __PLACEHOLDER__ISSUE_MEDIUM_COUNT \\ 
+  \hline
+  Low Risk & __PLACEHOLDER__ISSUE_LOW_COUNT \\
+  \hline
+  Informational & __PLACEHOLDER__ISSUE_INFORMATIONAL_COUNT \\
+  \hline
+  Gas Optimizations & __PLACEHOLDER__ISSUE_GAS_OPTIMIZATION_COUNT \\ 
+  \hline
+  Total Issues & __PLACEHOLDER__ISSUE_TOTAL_COUNT \\
+  \hline
+\end{longtable}
 
 % Reset float placement parameters to their defaults
 \renewcommand{\floatpagefraction}{.5}%
@@ -83,7 +61,15 @@ In this period, a total of __PLACEHOLDER__ISSUE_TOTAL_COUNT issues were found.
 
 \begin{longtable}{|p{12cm}|p{3cm}|}
   \caption*{\textbf{Summary of Findings}}
+  \hline 
+    \multicolumn{1}{|c|}{\textbf{Title}} & \multicolumn{1}{c|}{\textbf{Status}} \\   
+  \hline 
   % __PLACEHOLDER__SUMMARY_OF_FINDINGS_START
-    __PLACEHOLDER__SUMMARY_OF_FINDINGS
-  % __PLACEHOLDER__SUMMARY_OF_FINDINGS_END
+\hline\hyperlink{refund-miscalculation-due-to-inclusion-of-free-nfts}{[H-1] Refund Miscalculation Due to Inclusion of Free NFTs} & Open \\
+\hline\hyperlink{unbounded-royalty-rate-in-nft-creation}{[M-1]  Unbounded royalty rate in NFT Creation} & Open \\
+\hline\hyperlink{inconsistent-fee-rate-limitation}{[M-2] Inconsistent Fee Rate Limitation} & Open \\
+\hline\hyperlink{possibility-of-griefing-when-locking-lp}{[L-1] Possibility of griefing when locking LP} & Open \\
+\hline\hyperlink{redundant-event-emission}{[I-1] Redundant event emission} & Open \\
+\hline
+% __PLACEHOLDER__SUMMARY_OF_FINDINGS_END
 \end{longtable}
