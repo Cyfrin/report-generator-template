@@ -1,2 +1,7 @@
-The Cyfrin team makes every effort to find as many vulnerabilities in the code as possible in the given time but holds no responsibility for the findings in this document.
-A security audit by the team does not endorse the underlying business or product. The audit was time-boxed and the review of the code was solely on the security aspects of the solidity implementation of the contracts.
+This report is based on the scope of materials and documentation provided for a limited review at the time provided. 
+
+Results may not be complete nor inclusive of all vulnerabilities. 
+
+The review and this report are provided on an as‐is, where‐is, and as‐available basis.
+
+A report does not indicate the endorsement of any particular project or team, nor guarantee its security.
