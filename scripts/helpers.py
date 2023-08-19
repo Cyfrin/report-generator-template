@@ -133,6 +133,9 @@ def get_issues(repository, github):
 
     # The dictionary where the issues will be stored, by severity.
     issue_dict : dict[str, list[str]] = {}
+    issue_dict_body : dict[str, str] = {}
+    issue_dict_title : dict[str, str] = {}
+    issue_dict_new : dict[str, list[str]] = {}
 
     # Dictionary for issues by github number, to replace #xx links
     issues_by_number : dict[int, str] = {}
@@ -165,7 +168,9 @@ def get_issues(repository, github):
                 severity_label = severity_labels_in_issue[0]
                 if severity_label not in issue_dict:
                     issue_dict[severity_label] = []
+                    issue_dict_new[severity_label] = []
                 issue_dict[severity_label].append(f"\n\n### {issue.title}\n\n{issue.body}\n")
+                issue_dict_body[severity_label] = issue.body;
 
                 status_label = status_labels_in_issue[0]
                 # Append issue title and status to summary of findings dictionary
@@ -178,17 +183,7 @@ def get_issues(repository, github):
         return 0
 
     issue_dict = replace_internal_links(issue_dict, issues_by_number)
-
-    with open(SOURCE_REPORT, "w") as report:
-        for label in SEVERITY_LABELS:
-            # Do nothing if there are no issues with this label
-            if get_issue_count(issue_dict, label) == 0:
-                continue
-
-            report.write(f"## {label[10:]}\n")
-            for content in issue_dict[label]:
-                report.write(content.replace("\r\n", "\n"))
-            report.write("\n\\clearpage\n")
+    # issue_dict_body = replace_internal_links(issue_dict_body, issues_by_number)
 
     total_count = 0
     with open(SEVERITY_COUNTS, "w") as counts_file:
@@ -205,7 +200,7 @@ def get_issues(repository, github):
         summary_tex_content = summary_file.read()
         
     summary_findings_table = ""
-    mitigation_table = f"Name,Status,{get_summary_information()['team_name']},Cyfrin\n"
+    mitigation_table = f"Name,Status,{get_summary_information()['team_name']},bytes032\n"
     for label in SEVERITY_LABELS:
         # Do nothing if there are no issues with this label
         if get_issue_count(issue_dict, label) == 0:
@@ -218,13 +213,35 @@ def get_issues(repository, github):
 
         # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
-            print(issue_title)
+            title = str([f"{label[10:11]}-" + str(counter).zfill(fill)]) + " " + issue_title
+            title = title.replace("'","")
+            issue_title = title
+            print(title)
+            # issue_title = 
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
-            prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(issue_title)}}}"
+            print(latex_hypertarget)
+            prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{{format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
-            print(str([prefix + str(counter).zfill(fill)]) + " " + issue_title)
+            # print(str([prefix + str(counter).zfill(fill)]) + " " + issue_title)
+            title = str([f"{label[10:11]}-" + str(counter).zfill(fill)]) + " " + issue_title
+            body = issue_dict_body[label]
+
+            issue_dict_new[label].append(f"\n\n### {issue_title}\n\n{body}\n")
             mitigation_table += f"{issue_title},{status_label},,\n"
+    
+    issue_dict_new = replace_internal_links(issue_dict_new, issues_by_number)
+
+    with open(SOURCE_REPORT, "w") as report:
+        for label in SEVERITY_LABELS:
+            # Do nothing if there are no issues with this label
+            if get_issue_count(issue_dict_new, label) == 0:
+                continue
+            report.write(f"## {label[10:]}\n")
+            for content in issue_dict_new[label]:
+                report.write(content.replace("\r\n", "\n"))
+            report.write("\n\\clearpage\n")
+            
     # Replace the placeholder in the SUMMARY_TEX file
     placeholder_start = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START"
     placeholder_end = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_END"
