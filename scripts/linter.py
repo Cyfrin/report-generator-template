@@ -61,10 +61,10 @@ def lint(report, team_name, source_org, internal_org):
     for line in report:        
         # If there's a newline, merge the next line with the current one
         if (
+            (line.startswith("**Context:**") and len(line) < len("**Context:**") + 5) or
             (line.startswith("**Description:**") and len(line) < len("**Description:**") + 5) or
             (line.startswith("**Impact:**") and len(line) < len("**Impact:**") + 5) or
-            (line.startswith("**Proof of Concept:**") and len(line) < len("**Proof of Concept:**") + 5) or
-            (line.startswith("**Recommended Mitigation:**") and len(line) < len("**Recommended Mitigation:**") + 5) or
+            (line.startswith("**Recommendation:**") and len(line) < len("**Recommendation:**") + 5)) or
             (line.startswith("**" + internal_org + ":**") and len(line) < len("**" + internal_org +":**") + 5) or
             (line.startswith("**" + team_name + ":**") and len(line) < len("**" + team_name + ":**") + 5)):
             
