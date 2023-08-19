@@ -64,7 +64,7 @@ def lint(report, team_name, source_org, internal_org):
             (line.startswith("**Context:**") and len(line) < len("**Context:**") + 5) or
             (line.startswith("**Description:**") and len(line) < len("**Description:**") + 5) or
             (line.startswith("**Impact:**") and len(line) < len("**Impact:**") + 5) or
-            (line.startswith("**Recommendation:**") and len(line) < len("**Recommendation:**") + 5)) or
+            (line.startswith("**Recommendation:**") and len(line) < len("**Recommendation:**") + 5) or
             (line.startswith("**" + internal_org + ":**") and len(line) < len("**" + internal_org +":**") + 5) or
             (line.startswith("**" + team_name + ":**") and len(line) < len("**" + team_name + ":**") + 5)):
             
