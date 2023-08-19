@@ -1,29 +1,31 @@
 import configparser
-from datetime import timedelta
-from dateutil.parser import parse
 import math
-from os.path import exists as check_file
 import os
 import re
 import subprocess
+from datetime import timedelta
+from dateutil.parser import parse
+from os.path import exists as check_file
 
-# Define file paths
 SOURCE_PATH = './source/'
 OUTPUT_PATH = './output/'
-LEAD_AUDITORS = './source/lead_auditors.md'
-ASSISTING_AUDITORS = './source/assisting_auditors.md'
-SEVERITY_COUNTS = SOURCE_PATH + 'severity_counts.conf'
+LEAD_AUDITORS = os.path.join(SOURCE_PATH, 'lead_auditors.md')
+ASSISTING_AUDITORS = os.path.join(SOURCE_PATH, 'assisting_auditors.md')
+SEVERITY_COUNTS = os.path.join(SOURCE_PATH, 'severity_counts.conf')
 SUMMARY_TEX = './templates/summary.tex'
-SUMMARY_INFORMATION = SOURCE_PATH + 'summary_information.conf'
-SOURCE_REPORT = SOURCE_PATH + 'report.md'
-OUTPUT_SOLODIT = OUTPUT_PATH + 'solodit_report.md'
-MITIGATION_TABLE = OUTPUT_PATH + 'mitigation_table.csv'
+SUMMARY_INFORMATION = os.path.join(SOURCE_PATH, 'summary_information.conf')
+SOURCE_REPORT = os.path.join(SOURCE_PATH, 'report.md')
+OUTPUT_SOLODIT = os.path.join(OUTPUT_PATH, 'solodit_report.md')
+MITIGATION_TABLE = os.path.join(OUTPUT_PATH, 'mitigation_table.csv')
 
-# Possible severity labels from github issues
-SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Informational', 'Severity: Gas Optimization']
+SEVERITY_LABELS = [
+    'Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk',
+    'Severity: Low Risk', 'Severity: Informational', 'Severity: Gas Optimization'
+]
 
-# Possible status labels from github issues
-STATUS_LABELS = ['Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved', 'Report Status: Closed']
+STATUS_LABELS = [
+    'Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved', 'Report Status: Closed'
+]
 
 # Little helper to get issues with a certain label
 def get_issue_count(dict, label):
@@ -216,10 +218,7 @@ def get_issues(repository, github):
             title = str([f"{label[10:11]}-" + str(counter).zfill(fill)]) + " " + issue_title
             title = title.replace("'","")
             issue_title = title
-            print(title)
-            # issue_title = 
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
-            print(latex_hypertarget)
             prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{{format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
