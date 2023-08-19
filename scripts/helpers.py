@@ -360,12 +360,6 @@ def get_severity_counts():
 
 def edit_report_md():
     with open(SOURCE_REPORT, 'r') as source_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
-        # solodit_report.write('**Lead Auditors**\n\n')
-        # for line in lead_auditors:
-        #     solodit_report.write(line)
-        # solodit_report.write('\n**Assisting Auditors**\n\n')
-        # for line in assisting_auditors:
-        #     solodit_report.write(line)
         solodit_report.write('\n\n---\n\n# Findings\n')
         for line in source_report:
             solodit_report.write(line)
