@@ -218,12 +218,13 @@ def get_issues(repository, github):
 
         # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
+            print(issue_title)
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
             prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
+            print(str([prefix + str(counter).zfill(fill)]) + " " + issue_title)
             mitigation_table += f"{issue_title},{status_label},,\n"
-
     # Replace the placeholder in the SUMMARY_TEX file
     placeholder_start = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START"
     placeholder_end = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_END"
