@@ -44,7 +44,7 @@ REPLACE_SEVERITIES = [["__PLACEHOLDER__ISSUE_CRITICAL_COUNT", severity_count_dat
 # Lint the report.md
 print("Linting the report.md file ...")
 report = helpers.get_file_contents(helpers.SOURCE_REPORT)
-report = linter.lint(report, summary_data['team_name'], source_org, "Cyfrin")
+report = linter.lint(report, summary_data['team_name'], source_org, "bytes032")
 helpers.save_file_contents(helpers.SOURCE_REPORT, report)
 print(f"Done.\n")
 
