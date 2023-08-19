@@ -25,7 +25,7 @@ rm ./working/report.tex.bak
 
 # Adding Needspaces before subsections and subsubsections
 # Maybe 6cm is not the perfect value here, but it works good enough
-sed -i '' 's/\\subsubsection/\\Needspace{6cm}\\subsubsection/g' ./working/report.tex
+sed -i '' 's/\\subsubsection/\\Needspace{6cm}\\subsubsection*/g' ./working/report.tex
 sed -i '' 's/\\subsection/\\Needspace{8cm}\\subsection/g' ./working/report.tex
 
 # Allow long code listings to break pages
