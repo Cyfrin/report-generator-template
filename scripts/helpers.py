@@ -49,6 +49,8 @@ def title_to_link(title):
     full_link = f"[*{title}*](#{link_anchor})"
     return full_link
 
+    
+
 
 def replace_internal_links(issues, issues_by_number):
     """
@@ -336,12 +338,8 @@ def get_summary_information():
     
     config = configparser.ConfigParser()
     config.read(SUMMARY_INFORMATION)
-    
-    summary : dict[str, str] = {}
-    
-    # Copy to dictionary
-    for key, value in config['summary'].items():
-        summary[key] = value
+
+    summary = {key: value for key, value in config['summary'].items()}
     
     return summary
 
