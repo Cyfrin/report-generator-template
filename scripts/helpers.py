@@ -205,6 +205,7 @@ def get_issues(repository, github):
         
     summary_findings_table = ""
     mitigation_table = f"Name,Status,{get_summary_information()['team_name']},bytes032\n"
+    order = 0
     for label in SEVERITY_LABELS:
         # Do nothing if there are no issues with this label
         if get_issue_count(issue_dict, label) == 0:
@@ -215,16 +216,21 @@ def get_issues(repository, github):
 
         mitigation_table += f"{label.split()[1].upper()},,,\n"
 
-        # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
+            isOdd = order % 2 == 0
+            order += 1
+            
             title = str([f"{label[10:11]}-" + str(counter).zfill(fill)]) + " " + issue_title
             title = title.replace("'","")
             issue_title = title
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
             prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{{format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
-            summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
-            # print(str([prefix + str(counter).zfill(fill)]) + " " + issue_title)
+            if isOdd:
+                summary_findings_table += f"\\rowcolor{{lightgray}}{prefixed_title} & {status_label} \\\\\n"
+            else:
+                summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n"
+
             title = str([f"{label[10:11]}-" + str(counter).zfill(fill)]) + " " + issue_title
             body = issue_dict_body[label]
 
@@ -255,7 +261,7 @@ def get_issues(repository, github):
         # Construct the new content with the updated table
         new_content = (
             summary_tex_content[:start_position]
-            + placeholder_start + "\n\hline"
+            + placeholder_start + "\n"
             + summary_findings_table + "\n"
             + placeholder_end
             + summary_tex_content[end_position:]

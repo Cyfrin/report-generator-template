@@ -1,75 +1,57 @@
 \newcommand{\truncatehash}[1]{%
   \StrLeft{#1}{12}\ldots%
 }
-
-\hypertarget{protocol-summary}{%
-\section{Protocol Summary}\label{protocol-summary}}
-
-\input{protocol_summary.tex}
  
 \hypertarget{executive-summary}{%
 \section{Executive Summary}\label{executive-summary}}
 
-% Temporarily adjust the float placement parameters
-\renewcommand{\floatpagefraction}{.8}%
-\renewcommand{\textfraction}{.1}%
-\renewcommand{\topfraction}{.9}%
-\renewcommand{\bottomfraction}{.9}%
-\setcounter{topnumber}{2}
-\setcounter{bottomnumber}{2}
-\setcounter{totalnumber}{4}
 
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{totalcolor}{rgb}{0.8, 0.8, 0.8} % Color for the "Total Issues" row
 
-\begin{longtable}{|p{3cm}|p{12cm}|}
-  \caption*{\textbf{Overview}}
-  \hline
-  Project Name & __PLACEHOLDER__PROJECT_NAME \\
-  \hline
+\renewcommand{\arraystretch}{1.5} % Increase row height
+
+\begin{longtable}{p{3cm}p{12cm}}
+  \caption*{\textbf{Overview}} \\
+  \toprule
+  \rowcolor{lightgray}Project Name & __PLACEHOLDER__PROJECT_NAME \\
   Repository & \href{__PLACEHOLDER__REPO_LINK}{__PLACEHOLDER__REPO_NAME} \\
-  \hline
-  Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__COMMIT_HASH}} \\
-  \hline
+  \rowcolor{lightgray}Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__COMMIT_HASH}} \\
+  \bottomrule
 \end{longtable}
 
-\begin{longtable}{|p{12cm}|p{3cm}|}
-  \caption*{\textbf{Issues Found}}
-  \hline
-  Critical Risk & __PLACEHOLDER__ISSUE_CRITICAL_COUNT \\
-  \hline
+
+\begin{longtable}{p{12.5cm}p{2.5cm}}
+  \caption*{\textbf{Issues Found}} \\
+  \toprule
+  \textbf{Severity} & \textbf{Count} \\ % Column headers
+  \midrule
+  \rowcolor{lightgray}Critical Risk & __PLACEHOLDER__ISSUE_CRITICAL_COUNT \\
   High Risk & __PLACEHOLDER__ISSUE_HIGH_COUNT \\
-  \hline
-  Medium Risk & __PLACEHOLDER__ISSUE_MEDIUM_COUNT \\ 
-  \hline
+  \rowcolor{lightgray}Medium Risk & __PLACEHOLDER__ISSUE_MEDIUM_COUNT \\ 
   Low Risk & __PLACEHOLDER__ISSUE_LOW_COUNT \\
-  \hline
-  Informational & __PLACEHOLDER__ISSUE_INFORMATIONAL_COUNT \\
-  \hline
+  \rowcolor{lightgray}Informational & __PLACEHOLDER__ISSUE_INFORMATIONAL_COUNT \\
   Gas Optimizations & __PLACEHOLDER__ISSUE_GAS_OPTIMIZATION_COUNT \\ 
-  \hline
-  Total Issues & __PLACEHOLDER__ISSUE_TOTAL_COUNT \\
-  \hline
+  \midrule[1pt] % Double line for emphasis
+  \rowcolor{lightgray}\textbf{Total Issues} & \textbf{__PLACEHOLDER__ISSUE_TOTAL_COUNT} \\
+  \bottomrule
 \end{longtable}
 
-% Reset float placement parameters to their defaults
-\renewcommand{\floatpagefraction}{.5}%
-\renewcommand{\textfraction}{.2}%
-\renewcommand{\topfraction}{.7}%
-\renewcommand{\bottomfraction}{.3}%
-\setcounter{topnumber}{2}
-\setcounter{bottomnumber}{1}
-\setcounter{totalnumber}{3}
 
-\begin{longtable}{|p{12cm}|p{3cm}|}
-  \caption*{\textbf{Summary of Findings}}
-  \hline 
-    \multicolumn{1}{|c|}{\textbf{Title}} & \multicolumn{1}{c|}{\textbf{Status}} \\   
-  \hline 
+
+\begin{longtable}{p{12.5cm}p{2.5cm}}
+  \caption*{\textbf{Summary of Findings}} \\
+  \toprule
+  \textbf{Title} & \textbf{Status} \\   
+  \midrule
+  \endhead % header to be repeated on each page, if table spans multiple pages
   % __PLACEHOLDER__SUMMARY_OF_FINDINGS_START
-\hline\hyperlink{refund-miscalculation-due-to-inclusion-of-free-nfts}{[H-1] Refund Miscalculation Due to Inclusion of Free NFTs} & Open \\
-\hline\hyperlink{unbounded-royalty-rate-in-nft-creation}{[M-1]  Unbounded royalty rate in NFT Creation} & Open \\
-\hline\hyperlink{inconsistent-fee-rate-limitation}{[M-2] Inconsistent Fee Rate Limitation} & Open \\
-\hline\hyperlink{possibility-of-griefing-when-locking-lp}{[L-1] Possibility of griefing when locking LP} & Open \\
-\hline\hyperlink{redundant-event-emission}{[I-1] Redundant event emission} & Open \\
-\hline
+\rowcolor{lightgray}\hyperlink{h-1-refund-miscalculation-due-to-inclusion-of-free-nfts}{[H-1] Refund Miscalculation Due to Inclusion of Free NFTs} & Open \\
+\hyperlink{m-1-unbounded-royalty-rate-in-nft-creation}{[M-1] Unbounded royalty rate in NFT Creation} & Open \\
+\rowcolor{lightgray}\hyperlink{m-2-inconsistent-fee-rate-limitation}{[M-2] Inconsistent Fee Rate Limitation} & Acknowledged \\
+\hyperlink{l-1-possibility-of-griefing-when-locking-lp}{[L-1] Possibility of griefing when locking LP} & Open \\
+\rowcolor{lightgray}\hyperlink{i-1-redundant-event-emission}{[I-1] Redundant event emission} & Resolved \\
+
 % __PLACEHOLDER__SUMMARY_OF_FINDINGS_END
+\bottomrule
 \end{longtable}
