@@ -15,17 +15,17 @@ on:
 
   workflow_dispatch:
     inputs:
-        generator-path:
-          required: true
-          type: string
-          default: "cyfrin-report/report-generator-template"
-        output-path:
-          required: true
-          type: string
-          default: "./"
-        time:
-          required: false
-          type: string
+      generator-path:
+        required: true
+        type: string
+        default: "cyfrin-report/report-generator-template"
+      output-path:
+        required: true
+        type: string
+        default: "./"
+      time:
+        required: false
+        type: string
 
 permissions: read-all
 
@@ -90,23 +90,42 @@ jobs:
         id: date
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
+      - name: Get the filename
+        id: report_name
+        run: |
+          if [ -z "${{ inputs.time }}" ]; then
+            REPORT_NAME="${{ env.DATE }}-cyfrin-protocol-v0.0"
+          else
+            REPORT_NAME="${{ inputs.time }}-cyfrin-protocol-v0.0"
+          fi
+          echo "REPORT_NAME=${REPORT_NAME}" >> $GITHUB_ENV
+
+      - name: Rename the artifacts
+        run: |
+          cd $GITHUB_WORKSPACE
+          cd ${{ inputs.generator-path }}/working
+          mv main.pdf ${{ env.REPORT_NAME }}.pdf
+          cd $GITHUB_WORKSPACE/${{ inputs.generator-path }}/output
+          mv solodit_report.md ${{ env.REPORT_NAME }}.md
+          mv mitigation_table.csv ${{ env.REPORT_NAME }}.csv
+
       - name: Upload the report markdown
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.md
-          path: ./${{ inputs.generator-path }}/output/solodit_report.md
+          name: ${{ env.REPORT_NAME }}.md
+          path: ./${{ inputs.generator-path }}/output/${{ env.REPORT_NAME }}.md
 
       - name: Upload the report mitigation table
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.csv
-          path: ./${{ inputs.generator-path }}/output/mitigation_table.csv
+          name: ${{ env.REPORT_NAME }}.csv
+          path: ./${{ inputs.generator-path }}/output/${{ env.REPORT_NAME }}.csv
 
       - name: Upload the report PDF
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.pdf
-          path: ./${{ inputs.generator-path }}/working/main.pdf
+          name: ${{ env.REPORT_NAME }}.pdf
+          path: ./${{ inputs.generator-path }}/working/${{ env.REPORT_NAME }}.pdf
 
       - name: Final greeting, job status
         run: echo "Job finished. Status ${{ job.status }}."
