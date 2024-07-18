@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Initial greeting
         run: echo "Report generation started, triggered by a ${{ github.event_name }} event."
-      
+
       - name: Checkout the repository
         uses: actions/checkout@v4
 
@@ -60,14 +60,14 @@ jobs:
 
       - name: Install pandoc
         run: sudo apt-get install pandoc
-          
+
       - name: Generate the report
         run: |
           cd $GITHUB_WORKSPACE
           cd ${{ inputs.generator-path }}
           chmod a+x ./scripts/*
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} python3 generate_report.py
-          
+
       - name: Compile the LaTeX file
         continue-on-error: true
         uses: dante-ev/latex-action@latest
@@ -76,7 +76,7 @@ jobs:
           root_file: main.tex
           compiler: pdflatex
           args: -interaction=nonstopmode -shell-escape
-          
+
       - name: Compile the LaTeX file (again, for references)
         continue-on-error: true
         uses: dante-ev/latex-action@latest
@@ -85,7 +85,7 @@ jobs:
           root_file: main.tex
           compiler: pdflatex
           args: -interaction=nonstopmode -shell-escape
-          
+
       - name: Get the current date
         id: date
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
@@ -93,20 +93,20 @@ jobs:
       - name: Upload the report markdown
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-${{ github.event.repository.name }}.md
+          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.md
           path: ./${{ inputs.generator-path }}/output/solodit_report.md
 
       - name: Upload the report mitigation table
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-${{ github.event.repository.name }}.csv
+          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.csv
           path: ./${{ inputs.generator-path }}/output/mitigation_table.csv
 
       - name: Upload the report PDF
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-${{ github.event.repository.name }}.pdf
+          name: ${{ ((inputs.time == '' || inputs.time == null) && env.DATE || inputs.time) }}-cyfrin-protocol-v0.0.pdf
           path: ./${{ inputs.generator-path }}/working/main.pdf
-          
+
       - name: Final greeting, job status
         run: echo "Job finished. Status ${{ job.status }}."
