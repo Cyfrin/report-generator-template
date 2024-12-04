@@ -39,6 +39,10 @@ REPLACE_SUMMARY = [["__PLACEHOLDER__REVIEW_LENGTH", str(helpers.calculate_period
                    ["__PLACEHOLDER__COMMIT_HASH", summary_data['commit_hash']],
                    ["__PLACEHOLDER__FIX_COMMIT_HASH_LINK", re.sub(r'(\.git)?$', '', summary_data['project_github']) + "/blob/" + summary_data['fix_commit_hash'] if summary_data['fix_commit_hash'] else ""],
                    ["__PLACEHOLDER__FIX_COMMIT_HASH", summary_data['fix_commit_hash'] or ""],
+                   ["__PLACEHOLDER__FIX_COMMIT_HASH_LINK_2", re.sub(r'(\.git)?$', '', summary_data['project_github_2']) + "/blob/" + summary_data['fix_commit_hash_2'] if summary_data['fix_commit_hash_2'] else ""],
+                   ["__PLACEHOLDER__FIX_COMMIT_HASH_2", summary_data['fix_commit_hash_2'] or ""],
+                   ["__PLACEHOLDER__FIX_COMMIT_HASH_LINK_3", re.sub(r'(\.git)?$', '', summary_data['project_github_3']) + "/blob/" + summary_data['fix_commit_hash_3'] if summary_data['fix_commit_hash_3'] else ""],
+                   ["__PLACEHOLDER__FIX_COMMIT_HASH_3", summary_data['fix_commit_hash_3'] or ""],
                    ["__PLACEHOLDER__AUDIT_TIMELINE", summary_data['review_timeline']],
                    ["__PLACEHOLDER__AUDIT_METHODS", summary_data['review_methods']]]
 
