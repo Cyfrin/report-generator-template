@@ -15,10 +15,11 @@ severity_count_data = helpers.get_severity_counts()
 REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
                  ["__PLACEHOLDER__REPORT_VERSION", summary_data['report_version']]]
 
-source_org, source_repo_name = re.search(r'/(?P<org_name>[^/]+)/([^/.]+)(?:\.git)?$', summary_data['project_github']).groups()
-source_org, source_repo_name_2 = re.search(r'/(?P<org_name>[^/]+)/([^/.]+)(?:\.git)?$', summary_data['project_github_2']).groups()
-source_org, source_repo_name_3 = re.search(r'/(?P<org_name>[^/]+)/([^/.]+)(?:\.git)?$', summary_data['project_github_3']).groups()
-internal_org, internal_repo_name = re.search(r'/(?P<org_name>[^/]+)/([^/.]+)(?:\.git)?$', summary_data['private_github']).groups()
+pattern = r'/(?P<org_name>[^/]+)/([^/]+?)(?=/(?:src|branch)|\.git|$)'
+source_org, source_repo_name = re.search(pattern, summary_data['project_github']).groups()
+source_org, source_repo_name_2 = re.search(pattern, summary_data['project_github_2']).groups()
+source_org, source_repo_name_3 = re.search(pattern, summary_data['project_github_3']).groups()
+internal_org, internal_repo_name = re.search(pattern, summary_data['private_github']).groups()
 
 # Information from summary_information.conf, inserted in Summary section -> summary.tex file
 REPLACE_SUMMARY = [["__PLACEHOLDER__REVIEW_LENGTH", str(helpers.calculate_period(summary_data['review_timeline']))],
