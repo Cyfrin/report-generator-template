@@ -17,8 +17,16 @@ REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
 
 pattern = r'/(?P<org_name>[^/]+)/([^/]+?)(?=/(?:src|branch)|\.git|$)'
 source_org, source_repo_name = re.search(pattern, summary_data['project_github']).groups()
-source_org, source_repo_name_2 = re.search(pattern, summary_data['project_github_2']).groups()
-source_org, source_repo_name_3 = re.search(pattern, summary_data['project_github_3']).groups()
+if summary_data['project_github_2']:
+    _, source_repo_name_2 = re.search(pattern, summary_data['project_github_2']).groups()
+else:
+    source_repo_name_2 = ""
+
+if summary_data['project_github_3']:
+    _, source_repo_name_3 = re.search(pattern, summary_data['project_github_3']).groups()
+else:
+    source_repo_name_3 = ""
+
 internal_org, internal_repo_name = re.search(pattern, summary_data['private_github']).groups()
 
 # Information from summary_information.conf, inserted in Summary section -> summary.tex file
