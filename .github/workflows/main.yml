@@ -70,7 +70,7 @@ jobs:
 
       - name: Compile the LaTeX file
         continue-on-error: true
-        uses: dante-ev/latex-action@latest
+        uses: dante-ev/latex-action@2023-A
         with:
           working_directory: ./${{ inputs.generator-path }}/working
           root_file: main.tex
@@ -79,7 +79,7 @@ jobs:
 
       - name: Compile the LaTeX file (again, for references)
         continue-on-error: true
-        uses: dante-ev/latex-action@latest
+        uses: dante-ev/latex-action@2023-A
         with:
           working_directory: ./${{ inputs.generator-path }}/working
           root_file: main.tex
