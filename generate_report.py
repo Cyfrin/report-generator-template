@@ -11,6 +11,10 @@ fetch_issues()
 summary_data = helpers.get_summary_information()
 severity_count_data = helpers.get_severity_counts()
 
+if summary_data['project_github'] == "":
+    print("No GitHub repository provided. Please check summary_information.conf.")
+    exit(1)
+
 # Project name taken from summary_information.conf, inserted in Title section -> title.tex file
 REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
                  ["__PLACEHOLDER__REPORT_VERSION", summary_data['report_version']]]
