@@ -11,9 +11,10 @@ fetch_issues()
 summary_data = helpers.get_summary_information()
 severity_count_data = helpers.get_severity_counts()
 
-if summary_data['project_github'] == "":
-    print("No GitHub repository provided. Please check summary_information.conf.")
-    exit(1)
+# If placeholder name is still in the summary_information.conf file, it means that the user didn't provide a GitHub repository, likely to be the first push on clone.
+if summary_data['project_name'] == "PROJECT_NAME":
+    print("No configuration provided. Please check summary_information.conf.")
+    exit(0)
 
 # Project name taken from summary_information.conf, inserted in Title section -> title.tex file
 REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
