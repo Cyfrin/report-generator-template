@@ -96,3 +96,7 @@ This tool can be used stand-alone but is primarily intended to be used alongside
 If intending to use this tool on its own, be sure to consider the public visibility of this repository and the security implications if the final report will contain sensitive information. If this is the case, it is recommended to create a private copy of this repository as forks are public by default.
 
 Additionally, given source and output files will need to be overwritten when generating multiple reports, it is recommended to create a new branch for each report and merge the final `.pdf` file into `main` when the report is complete.
+
+### Known issues
+- Issue titles with special characters may cause the LaTeX compilation to fail or freeze forever. If this happens, please edit the issue title to remove the special characters. (especially '&')
+- If the issue title is too long, it may cause the LaTeX compilation to fail. If this happens, please edit the issue title to make it shorter.

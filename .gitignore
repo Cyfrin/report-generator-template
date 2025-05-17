@@ -312,3 +312,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 venv/
+
+.DS_Store
