@@ -81,7 +81,7 @@ def markdown_heading_to_latex_hypertarget(heading):
     # Use Pandoc to generate LaTeX with a table of contents
     markdown = f"# Table of Contents\n\n{heading}"
     latex = subprocess.check_output(['pandoc', '-f', 'markdown', '-t', 'latex'], input=markdown.encode()).decode()
-    
+
     # Extract the hypertarget from the LaTeX
     hypertarget = ''
     for line in latex.split('\n'):
@@ -92,13 +92,13 @@ def markdown_heading_to_latex_hypertarget(heading):
             break
 
     hypertarget = re.sub(r'^\\hypertarget{(.*)}{%', r'\1', hypertarget) # Remove the leading "\\hypertarget{" and trailing "}{%"
-    
+
     return hypertarget
 
 
 def format_inline_code(text):
     # Find sections within backticks and wrap them with \texttt{} while also escaping underscores
-    return re.sub(r'`([^`]+)`', 
+    return re.sub(r'`([^`]+)`',
                   lambda m: '\\texttt{' + m.group(1).replace('_', '\\_') + '}',
                   text)
 
@@ -123,13 +123,20 @@ def calculate_period(review_timeline):
     return workdays
 
 
-def get_issues(repository, github):
+def get_issues(repository, github, filter_options=None):
     """
     get_issues Reads all the issues from the repo configured in config.py and generates a .md file.
 
     A simple script that collects issues from a repo and generate a markdown
     file (report.md). A personal access token will need to be configured. Also the repo name will
     need to be provided.
+
+    Args:
+        repository: The GitHub repository in format 'username/repo'
+        github: GitHub API client object
+        filter_options: Dictionary containing filter options:
+            - issue_ids: List of issue IDs to include
+            - label: Label to filter issues by
     """
 
     repository = re.sub(r'^https://github.com/(.*?)(\.git)?$', r'\1', repository)  # Remove the leading "https://github.com/" and trailing ".git"
@@ -146,6 +153,11 @@ def get_issues(repository, github):
     # Dictionary for summary of findings
     summary_of_findings: dict[str, list[tuple[str, str]]] = {}
 
+    # Set up filter options
+    filter_options = filter_options or {}
+    filter_issue_ids = filter_options.get('issue_ids', [])
+    filter_label = filter_options.get('label', '')
+
     # TODO catch get_repo() 404 errors and produce a gentle suggestion on what's wrong.
     # "GitHub's REST API v3 considers every pull request an issue"--need to filter them out.
     try:
@@ -153,6 +165,16 @@ def get_issues(repository, github):
         for i in range(len(issues_list)-1, -1, -1):
             issue = issues_list[i]
             if issue.state == 'open' and issue.pull_request is None:
+                # Apply filters
+                
+                # Filter by issue ID if specified
+                if filter_issue_ids and str(issue.number) not in filter_issue_ids:
+                    continue
+                
+                # Filter by label if specified
+                if filter_label and not any(label.name == filter_label for label in issue.labels):
+                    continue
+                
                 # get issue number and title for replacing links
                 issues_by_number[issue.number] = issue.title
 
@@ -329,6 +351,12 @@ def get_summary_information():
     # Copy to dictionary
     for key, value in config['summary'].items():
         summary[key] = value
+    
+    # Parse the issue ID list if present
+    if 'filter_issue_id_list' in summary and summary['filter_issue_id_list'].strip():
+        summary['filter_issue_id_list'] = [id.strip() for id in summary['filter_issue_id_list'].split(',')]
+    else:
+        summary['filter_issue_id_list'] = []
     
     return summary
 
