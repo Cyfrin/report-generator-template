@@ -323,12 +323,15 @@ def replace_in_file_content(file_content, replacement):
 
     lines = []
 
+    # Sort replacements by length (descending) to handle nested placeholders
+    sorted_replacements = sorted(replacement, key=lambda x: len(x[0]), reverse=True)
+
     for line in file_content:
         if line.find("__PLACEHOLDER__") >= 0:
-            for r in replacement:
+            for r in sorted_replacements:
                 line = line.replace(r[0], r[1])
         lines.append(line)
-    
+
     return lines
 
 
