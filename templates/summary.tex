@@ -48,23 +48,36 @@ In this period, a total of __PLACEHOLDER__ISSUE_TOTAL_COUNT issues were found.
     \hline
     Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__COMMIT_HASH}} \\
     \hline
-    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH}{}{}
-    {Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH}} \\ \hline}
-    \IfStrEq{__PLACEHOLDER__REPO_LINK_2}{}{}
-    {Repository 2 & \href{__PLACEHOLDER__REPO_LINK_2}{__PLACEHOLDER__REPO_NAME_2} \\ \hline
-    Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK_2}{\truncatehash{__PLACEHOLDER__COMMIT_HASH_2}} \\
-    \hline
-    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH_2}{}{}
-    {Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK_2}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH_2}} \\ \hline}
-    \hline}
-    \IfStrEq{__PLACEHOLDER__REPO_LINK_3}{}{}
-    {Repository 3 & \href{__PLACEHOLDER__REPO_LINK_3}{__PLACEHOLDER__REPO_NAME_3} \\
-    \hline
-    Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK_3}{\truncatehash{__PLACEHOLDER__COMMIT_HASH_3}} \\
-    \hline
-    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH_3}{}{}
-    {Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK_3}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH_3}} \\ \hline}
-    \hline}
+
+    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH}{}{}{
+      Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH}} \\
+      \hline
+    }
+
+    \IfStrEq{__PLACEHOLDER__REPO_LINK_2}{}{}{
+      Repository 2 & \href{__PLACEHOLDER__REPO_LINK_2}{__PLACEHOLDER__REPO_NAME_2} \\
+      \hline
+      Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK_2}{\truncatehash{__PLACEHOLDER__COMMIT_HASH_2}} \\
+      \hline
+    }
+
+    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH_2}{}{}{
+      Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK_2}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH_2}} \\
+      \hline
+    }
+
+    \IfStrEq{__PLACEHOLDER__REPO_LINK_3}{}{}{
+      Repository 3 & \href{__PLACEHOLDER__REPO_LINK_3}{__PLACEHOLDER__REPO_NAME_3} \\
+      \hline
+      Commit & \href{__PLACEHOLDER__COMMIT_HASH_LINK_3}{\truncatehash{__PLACEHOLDER__COMMIT_HASH_3}} \\
+      \hline
+    }
+
+    \IfStrEq{__PLACEHOLDER__FIX_COMMIT_HASH_3}{}{}{
+      Fix Commit & \href{__PLACEHOLDER__FIX_COMMIT_HASH_LINK_3}{\truncatehash{__PLACEHOLDER__FIX_COMMIT_HASH_3}} \\ 
+      \hline
+    }
+
     Audit Timeline & __PLACEHOLDER__AUDIT_TIMELINE \\
     \hline
     Methods & __PLACEHOLDER__AUDIT_METHODS \\
