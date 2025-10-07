@@ -5,8 +5,13 @@
 
 cd working
 
+# First pass - generates .aux files
 pdflatex -shell-escape -interaction nonstopmode main.tex
-# Running it a second time to generate references
+
+# Second pass - updates references and TOC
+pdflatex -shell-escape -interaction nonstopmode main.tex
+
+# Third pass - finalizes page numbers in TOC
 pdflatex -shell-escape -interaction nonstopmode main.tex
 
 cp main.pdf ../output/report.pdf

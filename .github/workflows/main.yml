@@ -68,7 +68,7 @@ jobs:
           chmod a+x ./scripts/*
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} python3 generate_report.py
 
-      - name: Compile the LaTeX file
+      - name: Compile the LaTeX file (1st pass)
         continue-on-error: true
         uses: dante-ev/latex-action@latest
         with:
@@ -77,7 +77,16 @@ jobs:
           compiler: pdflatex
           args: -interaction=nonstopmode -shell-escape
 
-      - name: Compile the LaTeX file (again, for references)
+      - name: Compile the LaTeX file (2nd pass)
+        continue-on-error: true
+        uses: dante-ev/latex-action@latest
+        with:
+          working_directory: ./${{ inputs.generator-path }}/working
+          root_file: main.tex
+          compiler: pdflatex
+          args: -interaction=nonstopmode -shell-escape
+
+      - name: Compile the LaTeX file (3rd pass)
         continue-on-error: true
         uses: dante-ev/latex-action@latest
         with:
