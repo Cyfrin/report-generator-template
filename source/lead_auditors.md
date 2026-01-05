@@ -1,3 +1,3 @@
-[Hans](https://twitter.com/hansfriese)
+[Auditor1](https://x.com/Auditor1)
 
-[0kage](https://twitter.com/0kage_eth)
+[Auditor2](https://x.com/Auditor2)

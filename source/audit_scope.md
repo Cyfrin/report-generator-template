@@ -1,1 +1,4 @@
-Summary of the audit scope and any specific inclusions/exceptions.
+The audit scope was limited to:
+```
+TODO - LIST OF FILES HERE
+```

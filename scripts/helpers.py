@@ -1,5 +1,5 @@
 import configparser
-from datetime import timedelta
+from datetime import timedelta, datetime
 from dateutil.parser import parse
 import math
 from os.path import exists as check_file
@@ -104,18 +104,31 @@ def format_inline_code(text):
 
 
 def calculate_period(review_timeline):
-    # Extract start and end dates from the review timeline
-    # `dateutil.parser.parse` is used here to parse date strings with ordinal suffixes
-    dates = [parse(date.strip()) for date in review_timeline.split(' - ')]
-    start_date = dates[0]
-    end_date = dates[1]
+    # Check if there's a year in the string (4 consecutive digits)
+    year_match = re.search(r'\b(\d{4})\b', review_timeline)
 
-    # Calculate the number of workdays
+    if year_match:
+        year = int(year_match.group(1))
+    else:
+        year = datetime.now().year
+
+    # Create a default date with the extracted/current year
+    default_date = datetime(year, 1, 1)
+
+    # Split and parse both dates with the same default year
+    parts = review_timeline.split(' - ')
+    start_date = parse(parts[0].strip(), default=default_date)
+    end_date = parse(parts[1].strip(), default=default_date)
+
+    # Handle year boundary: if start > end, assume start is previous year
+    if start_date > end_date:
+        start_date = start_date.replace(year=start_date.year - 1)
+
+    # Calculate workdays
     workdays = 0
     current_date = start_date
 
     while current_date <= end_date:
-        # Check if the current date is a weekday (Monday to Friday)
         if current_date.weekday() < 5:
             workdays += 1
         current_date += timedelta(days=1)
