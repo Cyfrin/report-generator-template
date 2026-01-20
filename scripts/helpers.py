@@ -24,7 +24,7 @@ MITIGATION_TABLE = OUTPUT_PATH + 'mitigation_table.csv'
 SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Informational', 'Severity: Gas Optimization']
 
 # Possible status labels from github issues
-STATUS_LABELS = ['Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved', 'Report Status: Closed']
+STATUS_LABELS = ['Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved']
 
 # Little helper to get issues with a certain label
 def get_issue_count(dict, label):
