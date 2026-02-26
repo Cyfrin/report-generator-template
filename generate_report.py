@@ -20,8 +20,14 @@ if summary_data['project_name'] == "PROJECT_NAME":
 for key in ('project_github', 'project_github_2', 'project_github_3', 'private_github'):
     summary_data[key] = summary_data[key].rstrip('/')
 
+# Build title text: include team name only if it's not already part of the project name
+if summary_data['team_name'].lower() in summary_data['project_name'].lower():
+    title_text = summary_data['project_name']
+else:
+    title_text = summary_data['team_name'] + " " + summary_data['project_name']
+
 # Project name taken from summary_information.conf, inserted in Title section -> title.tex file
-REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
+REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", title_text],
                  ["__PLACEHOLDER__REPORT_VERSION", summary_data['report_version']]]
 
 pattern = r'/(?P<org_name>[^/]+)/([^/]+?)(?=/(?:src|branch)|\.git|$)'
