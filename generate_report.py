@@ -16,6 +16,10 @@ if summary_data['project_name'] == "PROJECT_NAME":
     print("No configuration provided. Please check summary_information.conf.")
     exit(0)
 
+# Strip trailing slashes from GitHub URLs to prevent regex failures
+for key in ('project_github', 'project_github_2', 'project_github_3', 'private_github'):
+    summary_data[key] = summary_data[key].rstrip('/')
+
 # Project name taken from summary_information.conf, inserted in Title section -> title.tex file
 REPLACE_TITLE = [["__PLACEHOLDER__PROJECT_NAME", summary_data['project_name']],
                  ["__PLACEHOLDER__REPORT_VERSION", summary_data['report_version']]]

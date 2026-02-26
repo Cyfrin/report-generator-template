@@ -9,7 +9,7 @@ from .helpers import get_issues, get_summary_information
 load_dotenv()
 
 # Load github repo information and personal access token
-REPO = get_summary_information()['private_github']
+REPO = get_summary_information()['private_github'].rstrip('/')
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 github = Github(GITHUB_TOKEN)
 
