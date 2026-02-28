@@ -121,19 +121,19 @@ jobs:
       - name: Upload the report markdown
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.REPORT_NAME }}.md
+          name: ${{ env.REPORT_NAME }}-md
           path: ./${{ inputs.generator-path }}/output/${{ env.REPORT_NAME }}.md
 
       - name: Upload the report mitigation table
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.REPORT_NAME }}.csv
+          name: ${{ env.REPORT_NAME }}-csv
           path: ./${{ inputs.generator-path }}/output/${{ env.REPORT_NAME }}.csv
 
       - name: Upload the report PDF
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.REPORT_NAME }}.pdf
+          name: ${{ env.REPORT_NAME }}-pdf
           path: ./${{ inputs.generator-path }}/working/${{ env.REPORT_NAME }}.pdf
 
       - name: Final greeting, job status
