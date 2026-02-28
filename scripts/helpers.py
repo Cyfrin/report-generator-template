@@ -96,6 +96,24 @@ def markdown_heading_to_latex_hypertarget(heading):
     return hypertarget
 
 
+def escape_latex_special_chars(text):
+    # Escape LaTeX special characters that can appear in issue titles.
+    # Note: '&' is already handled by replace_ampersand_in_findings_headings(),
+    # and '_' within backticks is handled by format_inline_code().
+    # We only escape chars not handled elsewhere that won't conflict with
+    # the \texttt{} commands produced by format_inline_code().
+    replacements = [
+        ('%', '\\%'),
+        ('$', '\\$'),
+        ('#', '\\#'),
+        ('~', '\\textasciitilde{}'),
+        ('^', '\\textasciicircum{}'),
+    ]
+    for old, new in replacements:
+        text = text.replace(old, new)
+    return text
+
+
 def format_inline_code(text):
     # Find sections within backticks and wrap them with \texttt{} while also escaping underscores
     return re.sub(r'`([^`]+)`',
@@ -258,7 +276,8 @@ def get_issues(repository, github, filter_options=None):
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
             linted_title = replace_ampersand_in_findings_headings(issue_title)
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + linted_title)
-            prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(linted_title)}}}"
+            escaped_title = escape_latex_special_chars(linted_title)
+            prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(escaped_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
             mitigation_table += f"\"{linted_title}\",{status_label},,\n"
