@@ -3,6 +3,7 @@ import subprocess
 import scripts.helpers as helpers
 import scripts.linter as linter
 from scripts.fetch_issues import fetch_issues
+from scripts.resolve_auditors import resolve_auditors
 
 # Get issues
 fetch_issues()
@@ -87,6 +88,11 @@ print("Linting the report.md file ...")
 report = helpers.get_file_contents(helpers.SOURCE_REPORT)
 report = linter.lint(report, summary_data['team_name'], source_org, source_repo_name, internal_org, internal_repo_name)
 helpers.save_file_contents(helpers.SOURCE_REPORT, report)
+print(f"Done.\n")
+
+# Resolve auditor names to markdown links in working directory
+print("Resolving auditor names ...")
+resolve_auditors()
 print(f"Done.\n")
 
 # Convert all .md to .tex and save to working dir

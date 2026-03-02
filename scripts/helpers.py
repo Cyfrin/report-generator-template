@@ -13,6 +13,8 @@ SOURCE_PATH = './source/'
 OUTPUT_PATH = './output/'
 LEAD_AUDITORS = './source/lead_auditors.md'
 ASSISTING_AUDITORS = './source/assisting_auditors.md'
+WORKING_LEAD_AUDITORS = './working/lead_auditors.md'
+WORKING_ASSISTING_AUDITORS = './working/assisting_auditors.md'
 SEVERITY_COUNTS = SOURCE_PATH + 'severity_counts.conf'
 SUMMARY_TEX = './templates/summary.tex'
 SUMMARY_INFORMATION = SOURCE_PATH + 'summary_information.conf'
@@ -425,7 +427,7 @@ def get_severity_counts():
     return counts
 
 def edit_report_md():
-    with open(LEAD_AUDITORS, 'r') as lead_auditors, open(ASSISTING_AUDITORS, 'r') as assisting_auditors, open(SOURCE_REPORT, 'r') as source_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
+    with open(WORKING_LEAD_AUDITORS, 'r') as lead_auditors, open(WORKING_ASSISTING_AUDITORS, 'r') as assisting_auditors, open(SOURCE_REPORT, 'r') as source_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
         solodit_report.write('**Lead Auditors**\n\n')
         for line in lead_auditors:
             solodit_report.write(line)
