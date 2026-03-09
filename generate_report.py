@@ -14,7 +14,13 @@ severity_count_data = helpers.get_severity_counts()
 
 # If placeholder name is still in the summary_information.conf file, it means that the user didn't provide a GitHub repository, likely to be the first push on clone.
 if summary_data['project_name'] == "PROJECT_NAME":
-    print("No configuration provided. Please check summary_information.conf.")
+    print("Error: 'project_name' in source/summary_information.conf is still set to the default placeholder 'PROJECT_NAME'.")
+    print("Please update it to the actual project name before generating the report.")
+    exit(0)
+
+if summary_data['team_name'] == "TEAM_NAME":
+    print("Error: 'team_name' in source/summary_information.conf is still set to the default placeholder 'TEAM_NAME'.")
+    print("Please update it to the actual team name before generating the report.")
     exit(0)
 
 # Strip trailing slashes from GitHub URLs to prevent regex failures
