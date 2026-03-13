@@ -1,6 +1,4 @@
-TODO - Summary of the audit findings and any additional executive comments. Put in the finding numbers below, remove categories that don't apply (eg remove Critical from next sentence if no Crits found).
-
-> The findings consist of X Critical, X High, X Medium & X Low severity issues with the remainder being informational and gas optimizations.
+TODO - any additional executive comments
 
 **Centralization Risks**
 

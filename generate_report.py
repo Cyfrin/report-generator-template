@@ -79,7 +79,10 @@ REPLACE_SUMMARY = [["__PLACEHOLDER__REVIEW_LENGTH", str(helpers.calculate_period
 
 
 # Severities count taken from severity_count.conf, inserted in Total Issues section -> summary.tex file
-REPLACE_SEVERITIES = [["__PLACEHOLDER__ISSUE_CRITICAL_COUNT", severity_count_data['critical']],
+findings_sentence = helpers.build_findings_sentence(severity_count_data)
+
+REPLACE_SEVERITIES = [["__PLACEHOLDER__FINDINGS_SENTENCE", findings_sentence],
+                      ["__PLACEHOLDER__ISSUE_CRITICAL_COUNT", severity_count_data['critical']],
                       ["__PLACEHOLDER__ISSUE_HIGH_COUNT", severity_count_data['high']],
                       ["__PLACEHOLDER__ISSUE_MEDIUM_COUNT", severity_count_data['medium']],
                       ["__PLACEHOLDER__ISSUE_LOW_COUNT", severity_count_data['low']],

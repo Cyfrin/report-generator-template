@@ -426,6 +426,50 @@ def get_severity_counts():
     
     return counts
 
+def join_with_ampersand(parts):
+    if len(parts) == 1:
+        return parts[0]
+    return ", ".join(parts[:-1]) + " \& " + parts[-1]
+
+
+def build_findings_sentence(counts):
+    core = []
+    for key, name in [('critical', 'Critical'), ('high', 'High'), ('medium', 'Medium'), ('low', 'Low')]:
+        c = int(counts[key])
+        if c > 0:
+            core.append(f"{c} {name}")
+
+    has_info = int(counts['informational']) > 0
+    has_gas = int(counts['gas_optimization']) > 0
+
+    if not core and not has_info and not has_gas:
+        return ""
+
+    if not core:
+        parts = []
+        if has_info:
+            parts.append(f"{counts['informational']} Informational")
+        if has_gas:
+            parts.append(f"{counts['gas_optimization']} Gas Optimizations")
+        sentence = "The findings consist of " + join_with_ampersand(parts) + "."
+        return " " + sentence
+
+    total_core = sum(int(counts[k]) for k in ('critical', 'high', 'medium', 'low'))
+    noun = "severity issue" if total_core == 1 else "severity issues"
+    sentence = "The findings consist of " + join_with_ampersand(core) + " " + noun
+
+    if has_info and has_gas:
+        sentence += " with the remainder being informational and gas optimizations."
+    elif has_info:
+        sentence += " with the remainder being informational."
+    elif has_gas:
+        sentence += " with the remainder being gas optimizations."
+    else:
+        sentence += "."
+
+    return " " + sentence
+
+
 def edit_report_md():
     with open(WORKING_LEAD_AUDITORS, 'r') as lead_auditors, open(WORKING_ASSISTING_AUDITORS, 'r') as assisting_auditors, open(SOURCE_REPORT, 'r') as source_report, open(OUTPUT_SOLODIT, 'w') as solodit_report:
         solodit_report.write('**Lead Auditors**\n\n')
