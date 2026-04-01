@@ -8,7 +8,7 @@ TODO - document any centralization risks here such as upgradeable contracts, adm
 
 **Protocol Invariants**
 
-TODO - use fv-certora skill to generate & output invariants here OR remove Protocol Invariants section if it doesn't apply to your audit
+TODO - use Bastion skill to generate & output invariants here OR remove Protocol Invariants section if it doesn't apply to your audit
 
 **Post Audit Recommendations**
 
