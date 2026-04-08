@@ -97,6 +97,10 @@ If intending to use this tool on its own, be sure to consider the public visibil
 
 Additionally, given source and output files will need to be overwritten when generating multiple reports, it is recommended to create a new branch for each report and merge the final `.pdf` file into `main` when the report is complete.
 
+### Combined multi-phase reports
+
+When a client has multiple audits and requests a single unified report, see [COMBINED_REPORT_GUIDE.md](COMBINED_REPORT_GUIDE.md) for how to create a modified template that fetches issues from multiple repos and presents all phases in one PDF.
+
 ### Known issues
 - Issue titles with special characters may cause the LaTeX compilation to fail or freeze forever. If this happens, please edit the issue title to remove the special characters. (especially '&')
 - If the issue title is too long, it may cause the LaTeX compilation to fail. If this happens, please edit the issue title to make it shorter.
