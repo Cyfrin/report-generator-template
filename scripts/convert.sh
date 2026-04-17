@@ -11,7 +11,11 @@ pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/disclaimer.md -o ./working/disclaimer.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/protocol_summary.md -o ./working/protocol_summary.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/audit_scope.md -o ./working/audit_scope.tex
-pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/executive_summary.md -o ./working/executive_summary.tex
+# executive_summary.md uses --from markdown (not gfm) so pandoc honours the
+# dash-ratio column widths in the invariants tables. Under --from gfm, all
+# columns render as auto-width (l/c) and long Property cells push Status off
+# the page; --from markdown emits p{width%} columns matching the dash ratios.
+pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from markdown ./source/executive_summary.md -o ./working/executive_summary.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/report.md -o ./working/report.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/additional_comments.md -o ./working/additional_comments.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/appendix.md -o ./working/append

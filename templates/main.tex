@@ -60,6 +60,15 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{array}
+\usepackage{calc}
+\usepackage{ragged2e}
+
+% Unicode fallbacks for pdflatex (✓/✗ used in invariant tables)
+\usepackage{amssymb}
+\usepackage{newunicodechar}
+\newunicodechar{✓}{\ensuremath{\checkmark}}
+\newunicodechar{✗}{\ensuremath{\times}}
 
 % Adding breaklines=true to minted's settings seems to produce some errors related to fonts. This is
 % the only fix that worked.
