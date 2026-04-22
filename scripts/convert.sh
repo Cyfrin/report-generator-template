@@ -9,12 +9,12 @@ pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./working/assisting_auditors.md -o ./working/assisting_auditors.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/about_cyfrin.md -o ./working/about_cyfrin.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/disclaimer.md -o ./working/disclaimer.tex
-pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/protocol_summary.md -o ./working/protocol_summary.tex
-pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/audit_scope.md -o ./working/audit_scope.tex
-# executive_summary.md uses --from markdown (not gfm) so pandoc honours the
-# dash-ratio column widths in the invariants tables. Under --from gfm, all
-# columns render as auto-width (l/c) and long Property cells push Status off
+# protocol_summary.md and executive_summary.md use --from markdown (not gfm)
+# so pandoc honours dash-ratio column widths in tables. Under --from gfm, all
+# columns render as auto-width (l/c) and long cells can push later columns off
 # the page; --from markdown emits p{width%} columns matching the dash ratios.
+pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from markdown ./source/protocol_summary.md -o ./working/protocol_summary.tex
+pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/audit_scope.md -o ./working/audit_scope.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from markdown ./source/executive_summary.md -o ./working/executive_summary.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/report.md -o ./working/report.tex
 pandoc --filter ./scripts/pandoc-minted.py --filter ./scripts/pandoc-image.py --from gfm ./source/additional_comments.md -o ./working/additional_comments.tex
