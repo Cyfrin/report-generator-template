@@ -6,7 +6,7 @@ TODO - document any centralization risks here such as upgradeable contracts, adm
 
 ## Defensive Improvements
 
-TODO - document any defensive improvements which could be made, gaps in defense-in-depth etc. No bugs here, just recommendations to harden the protocol.
+TODO - document any defense-in-depth gaps here such as missing pause, caps, 2-step setters, role separation. Remove section if not required.
 
 ## Protocol Invariants
 
