@@ -1,10 +1,12 @@
-TODO - any additional executive comments
-
 ## Centralization Risks
 
 TODO - document any centralization risks here such as upgradeable contracts, admin features etc. Remove section if not required. Example text for TradFi protocol:
 
 > The protocol by its regulated nature is highly centralized with protocol admins having complete power including the ability to upgrade many contracts to new implementations; protocol users must place complete trust in the protocol admins when engaging with the protocol. One benefit to this is that even if a serious bug should be discovered once the protocol is live, protocol admins will in many cases be able to upgrade the relevant contracts and resolve the issue.
+
+## Defensive Improvements
+
+TODO - document any defensive improvements which could be made, gaps in defense-in-depth etc. No bugs here, just recommendations to harden the protocol.
 
 ## Protocol Invariants
 
