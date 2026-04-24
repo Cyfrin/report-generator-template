@@ -43,13 +43,28 @@ def lint(report, team_name, source_org, source_repo_name, internal_org, internal
         report[report.index(line)] = new_line
 
     # Check for link structures ( format [something](url) ) that don't start with http
-    for line in report:
+    for idx, line in enumerate(report):
         pos = line.find("](")
         while pos != -1:
+            # Hard fail when the URL is wrapped onto the next line (line ends with "](").
+            # Pandoc won't render this as a link, so refuse to continue and tell the auditor
+            # exactly which issue and which line to fix in the source GitHub issue.
+            if pos + 2 >= len(line):
+                issue_title = "<unknown — no '### ' heading found above this line>"
+                for prev in range(idx - 1, -1, -1):
+                    if report[prev].startswith("### "):
+                        issue_title = report[prev][4:].strip()
+                        break
+                raise ValueError(
+                    "Broken markdown link in report.md at line "
+                    f"{idx + 1}: {line!r}\n"
+                    f"  Issue: {issue_title}\n"
+                    "  The URL is wrapped onto the next line. Edit the issue body on "
+                    "GitHub so the entire `[text](url)` is on one line, then re-run."
+                )
             # Check if the first 4 characters after the open-paren are "http"
-            if line[pos+2:pos+6] != "http" and line[pos+2] != "#":
-                position = report.index(line)
-                print(f"Possible broken link at report.md line {position}: ")
+            if line[pos+2:pos+6] != "http" and line[pos+2:pos+3] != "#":
+                print(f"Possible broken link at report.md line {idx + 1}: ")
                 print(f"\t{line}")
             pos = line.find("](", pos+1)
 
