@@ -19,23 +19,12 @@ def replace_org_in_link(line, internal_org, internal_repo_name, source_org, sour
     return line
 
 
-def replace_ampersand_in_findings_headings(line):
-    # If the line is a finding markdown heading and contains '&', replace '&' with 'and'
-    if line.strip().startswith('###') and '&' in line:
-        line = line.replace('&', 'and')
-
-    return line
-
-
 def lint(report, team_name, source_org, source_repo_name, internal_org, internal_repo_name,):
     for line in report:
         new_line = line
-        
+
         # Replace any internal organization repo links
         new_line = replace_org_in_link(new_line, internal_org, internal_repo_name, source_org, source_repo_name)
-        
-        # Replace any '&' in finding headings with 'and'
-        new_line = replace_ampersand_in_findings_headings(new_line)
 
         # Replace any double backslashes with single backslashes (GitHub MathJax to LaTeX)
         new_line = new_line.replace('\\\\', '\\')
