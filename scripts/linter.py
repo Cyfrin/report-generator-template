@@ -31,8 +31,18 @@ def lint(report, team_name, source_org, source_repo_name, internal_org, internal
 
         report[report.index(line)] = new_line
 
-    # Check for link structures ( format [something](url) ) that don't start with http
+    # Check for link structures ( format [something](url) ) that don't start with http.
+    # Skip fenced code blocks (``` / ~~~): code such as Solidity's `new Type[](size)` is not
+    # a markdown link, and wrapping its size argument onto the next line ends the line in "]("
+    # which would otherwise be misread as a link whose URL spilled onto the next line.
+    in_code_fence = False
     for idx, line in enumerate(report):
+        stripped = line.lstrip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_code_fence = not in_code_fence
+            continue
+        if in_code_fence:
+            continue
         pos = line.find("](")
         while pos != -1:
             # Hard fail when the URL is wrapped onto the next line (line ends with "](").
