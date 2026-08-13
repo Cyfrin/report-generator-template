@@ -52,6 +52,37 @@ class TestReplaceInternalLinks:
         out = helpers.replace_internal_links(issues, {})
         assert out["Severity: Low Risk"][0] == "nothing to link here"
 
+    def test_ignores_issue_number_in_fenced_code_block(self):
+        issue = """Description\n\n```solidity\n// Mutation #1 occurs at the boundary\n```\n"""
+        issues = {"Severity: Low Risk": [issue]}
+
+        out = helpers.replace_internal_links(issues, {})
+
+        assert out["Severity: Low Risk"][0] == issue
+
+    def test_replaces_prose_reference_around_fenced_code_block(self):
+        issues = {
+            "Severity: Low Risk": [
+                "See #12.\n\n```solidity\n// step #1\n```\n\nAlso see #12."
+            ]
+        }
+
+        out = helpers.replace_internal_links(issues, {12: "Related finding"})
+
+        assert out["Severity: Low Risk"][0] == (
+            "See " + helpers.title_to_link("Related finding") + ".\n\n"
+            "```solidity\n// step #1\n```\n\nAlso see "
+            + helpers.title_to_link("Related finding") + "."
+        )
+
+    def test_ignores_issue_number_after_unclosed_fence(self):
+        issue = "```solidity\n// Mutation #1 occurs at the boundary\n"
+        issues = {"Severity: Low Risk": [issue]}
+
+        out = helpers.replace_internal_links(issues, {})
+
+        assert out["Severity: Low Risk"][0] == issue
+
 
 class TestEscapeLatexSpecialChars:
     def test_escapes_all_specials(self):

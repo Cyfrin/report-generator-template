@@ -52,29 +52,40 @@ def title_to_link(title):
 
 def replace_internal_links(issues, issues_by_number):
     """
-    replace_internal_links Replaces github's issue links (#xx) with internal document links
+    replace_internal_links Replaces GitHub issue links (#xx) with internal document links.
+
+    References in fenced code blocks are left untouched. They are code comments or
+    examples rather than report cross-references.
     """
+    def replace_links_in_prose(text):
+        # Match the issue linter's fence handling: anything after an opening
+        # fence is code until the next fence, including an unclosed fence.
+        in_fence = False
+        output = []
+        for line in text.splitlines(keepends=True):
+            if re.match(r"^\s*```", line):
+                in_fence = not in_fence
+                output.append(line)
+                continue
+            if in_fence:
+                output.append(line)
+                continue
+
+            for match in re.findall(r" #\d{1,4}", line):
+                number = int(match[2:])
+                try:
+                    target = " " + title_to_link(issues_by_number[number])
+                except KeyError as e:
+                    print(f"Issue '{text}' references issue #{number} but there is no such issue. KeyError {e}. Make sure there aren't any `#`s written in the Issue description.")
+                    exit(1)
+                line = line.replace(match, target)
+            output.append(line)
+        return "".join(output)
+
     for label in issues:
         for issue in issues[label]:
-            # Find every occurrence of ' #' followed by a number of up to 4 digits
-            p = re.findall(" #\d{1,4}", issue)
-            if p:
-                for match in p:
-                    # Extract the issue number to link to
-                    number = int(match[2:])
-                    # Create the internal link to the issue
-                    try:
-                        # The space below is needed, because the regexp match includes the space. Otherwise it would be lost.
-                        target = " " + title_to_link(issues_by_number[number])
-                    except KeyError as e:
-                        # Common error occurs when there is a '#' in the issue description i.e "Fix implemented in #2"
-                        print(f"Issue '{issue}' references issue #{number} but there is no such issue. KeyError {e}. Make sure there aren't any `#`s written in the Issue description.")
-                        exit(1)
-                    # Replace with link
-                    index = issues[label].index(issue)
-                    new_issue = issues[label][index].replace(match, target)
-                    issues[label][index] = new_issue
-                    issue = new_issue
+            index = issues[label].index(issue)
+            issues[label][index] = replace_links_in_prose(issue)
     return issues
 
 
