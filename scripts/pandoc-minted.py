@@ -66,7 +66,7 @@ def minted(key, value, format, meta):
     # Determine what kind of code object this is.
     if key == 'CodeBlock':
         template = Template(
-            '\\begin{minted}[$attributes]{$language}\n$contents\n\end{minted}'
+            '\\begin{minted}[$attributes]{$language}\n$contents\n\\end{minted}'
         )
         Element = RawBlock
     else:
@@ -81,4 +81,3 @@ def minted(key, value, format, meta):
 
 if __name__ == '__main__':
     toJSONFilter(minted)
-

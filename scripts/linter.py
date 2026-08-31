@@ -3,7 +3,7 @@ import re
 
 def replace_org_in_link(line, internal_org, internal_repo_name, source_org, source_repo_name):
     # Identify all links
-    links = re.findall('https?://[^\s<>"]+|[^\s<>"]+\.[^\s<>"]+', line)
+    links = re.findall(r'https?://[^\s<>"]+|[^\s<>"]+\.[^\s<>"]+', line)
 
     for link in links:
         if re.search(internal_org, link, re.IGNORECASE):

@@ -33,8 +33,7 @@ def get_issue_count(dict, label):
         count = len(dict[label])
     except:
         count = 0
-    finally:
-        return count
+    return count
 
 
 def title_to_link(title):
@@ -286,9 +285,9 @@ def get_issues(repository, github, filter_options=None):
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
             escaped_title = escape_latex_special_chars(issue_title)
-            prefixed_title = f"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(escaped_title)}}}"
+            prefixed_title = rf"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(escaped_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
-            summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\hline"
+            summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\\hline"
             mitigation_table += f"\"{issue_title}\",{status_label},,\n"
 
     # Replace the placeholder in the SUMMARY_TEX file
@@ -303,7 +302,7 @@ def get_issues(repository, github, filter_options=None):
         # Construct the new content with the updated table
         new_content = (
             summary_tex_content[:start_position]
-            + placeholder_start + "\n\hline"
+            + placeholder_start + "\n\\hline"
             + summary_findings_table + "\n"
             + placeholder_end
             + summary_tex_content[end_position:]
@@ -436,7 +435,7 @@ def get_severity_counts():
 def join_with_ampersand(parts):
     if len(parts) == 1:
         return parts[0]
-    return ", ".join(parts[:-1]) + " \& " + parts[-1]
+    return ", ".join(parts[:-1]) + r" \& " + parts[-1]
 
 
 def build_findings_sentence(counts):
