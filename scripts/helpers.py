@@ -27,6 +27,10 @@ SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: 
 # Possible status labels from github issues
 STATUS_LABELS = ['Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved', 'Report Status: Partially Resolved']
 
+# Status labels grouped as they are reported in the "Issues Found" table
+RESOLVED_STATUS_LABELS = ['Report Status: Resolved', 'Report Status: Partially Resolved']
+ACKNOWLEDGED_STATUS_LABELS = ['Report Status: Acknowledged']
+
 # Little helper to get issues with a certain label
 def get_issue_count(dict, label):
     try:
@@ -34,6 +38,11 @@ def get_issue_count(dict, label):
     except:
         count = 0
     return count
+
+
+# Little helper to count the issues of a severity whose status is in the given group
+def get_status_count(summary_of_findings, severity_label, status_labels):
+    return sum(1 for _, status in summary_of_findings.get(severity_label, []) if status in status_labels)
 
 
 def title_to_link(title):
@@ -256,15 +265,25 @@ def get_issues(repository, github, filter_options=None):
             report.write("\n\\clearpage\n")
 
     total_count = 0
+    total_resolved = 0
+    total_acknowledged = 0
     with open(SEVERITY_COUNTS, "w") as counts_file:
         counts_file.write('[counts]' + '\n')
         for label in SEVERITY_LABELS:
-            variable_name = label[10:].lower().replace(" risk", "").replace(" ", "_") + " = "
+            variable_name = label[10:].lower().replace(" risk", "").replace(" ", "_")
             count = get_issue_count(issue_dict, label)
-            counts_file.write(variable_name + str(count) + '\n')
+            resolved = get_status_count(summary_of_findings, label, RESOLVED_STATUS_LABELS)
+            acknowledged = get_status_count(summary_of_findings, label, ACKNOWLEDGED_STATUS_LABELS)
+            counts_file.write(variable_name + ' = ' + str(count) + '\n')
+            counts_file.write(variable_name + '_resolved = ' + str(resolved) + '\n')
+            counts_file.write(variable_name + '_acknowledged = ' + str(acknowledged) + '\n')
             count_by_severity[label] = count
             total_count += count
+            total_resolved += resolved
+            total_acknowledged += acknowledged
         counts_file.write('total = ' + str(total_count) + '\n')
+        counts_file.write('total_resolved = ' + str(total_resolved) + '\n')
+        counts_file.write('total_acknowledged = ' + str(total_acknowledged) + '\n')
 
     with open(SUMMARY_TEX, "r") as summary_file:
         summary_tex_content = summary_file.read()

@@ -81,14 +81,14 @@ REPLACE_SUMMARY = [["__PLACEHOLDER__REVIEW_LENGTH", str(helpers.calculate_period
 # Severities count taken from severity_count.conf, inserted in Total Issues section -> summary.tex file
 findings_sentence = helpers.build_findings_sentence(severity_count_data)
 
-REPLACE_SEVERITIES = [["__PLACEHOLDER__FINDINGS_SENTENCE", findings_sentence],
-                      ["__PLACEHOLDER__ISSUE_CRITICAL_COUNT", severity_count_data['critical']],
-                      ["__PLACEHOLDER__ISSUE_HIGH_COUNT", severity_count_data['high']],
-                      ["__PLACEHOLDER__ISSUE_MEDIUM_COUNT", severity_count_data['medium']],
-                      ["__PLACEHOLDER__ISSUE_LOW_COUNT", severity_count_data['low']],
-                      ["__PLACEHOLDER__ISSUE_INFORMATIONAL_COUNT" ,severity_count_data['informational']],
-                      ["__PLACEHOLDER__ISSUE_GAS_OPTIMIZATION_COUNT", severity_count_data['gas_optimization']],
-                      ["__PLACEHOLDER__ISSUE_TOTAL_COUNT", severity_count_data['total']]]
+REPLACE_SEVERITIES = [["__PLACEHOLDER__FINDINGS_SENTENCE", findings_sentence]]
+
+# Each severity contributes a found/resolved/acknowledged column to the "Issues Found" table.
+# Older severity_counts.conf files only have the found counts, so the rest default to 0.
+for severity in ['critical', 'high', 'medium', 'low', 'informational', 'gas_optimization', 'total']:
+    REPLACE_SEVERITIES += [[f"__PLACEHOLDER__ISSUE_{severity.upper()}_COUNT", severity_count_data[severity]],
+                           [f"__PLACEHOLDER__ISSUE_{severity.upper()}_RESOLVED_COUNT", severity_count_data.get(f"{severity}_resolved", "0")],
+                           [f"__PLACEHOLDER__ISSUE_{severity.upper()}_ACKNOWLEDGED_COUNT", severity_count_data.get(f"{severity}_acknowledged", "0")]]
 
 
 
