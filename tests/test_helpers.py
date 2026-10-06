@@ -171,3 +171,35 @@ class TestBuildFindingsSentence:
     def test_only_informational(self):
         s = helpers.build_findings_sentence(self._counts(informational=4))
         assert s == " The findings consist of 4 Informational."
+
+
+class TestBuildTitleText:
+    def test_distinct_team_and_project_are_joined(self):
+        assert helpers.build_title_text("Securitize", "Tempo Async Vault") == "Securitize Tempo Async Vault"
+
+    def test_team_contained_in_project_is_not_repeated(self):
+        assert helpers.build_title_text("Aztec", "Aztec Polynomial") == "Aztec Polynomial"
+
+    def test_identical_names(self):
+        assert helpers.build_title_text("Linea", "Linea") == "Linea"
+
+    def test_containment_is_case_insensitive(self):
+        assert helpers.build_title_text("greekfi", "GreekFi Oracle") == "GreekFi Oracle"
+
+
+class TestSlugify:
+    def test_basic(self):
+        assert helpers.slugify("Securitize Tempo Async Vault") == "securitize-tempo-async-vault"
+
+    def test_collapses_punctuation_and_trims(self):
+        assert helpers.slugify("  Note Systems: Frontend (v2)! ") == "note-systems-frontend-v2"
+
+
+class TestGetReportName:
+    def test_uses_title_and_version(self):
+        summary = {"team_name": "Securitize", "project_name": "Tempo Async Vault", "report_version": "1.0"}
+        assert helpers.get_report_name(summary) == "cyfrin-securitize-tempo-async-vault-v1.0"
+
+    def test_team_not_repeated(self):
+        summary = {"team_name": "Linea", "project_name": "Linea Yield Manager", "report_version": "2.1"}
+        assert helpers.get_report_name(summary) == "cyfrin-linea-yield-manager-v2.1"

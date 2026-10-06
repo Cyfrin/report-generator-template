@@ -451,6 +451,33 @@ def get_severity_counts():
     
     return counts
 
+
+def build_title_text(team_name, project_name):
+    """
+    build_title_text Builds the report title, including the team name only if it's not already part of the project name.
+
+    NOTE: audit-repo-cloner mirrors this logic to derive repo names and project board titles; keep them in sync.
+    """
+    if team_name.lower() in project_name.lower():
+        return project_name
+    return team_name + " " + project_name
+
+
+def slugify(text):
+    """
+    slugify Lowercases text and collapses every run of non-alphanumeric characters into a single hyphen.
+    """
+    return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
+
+
+def get_report_name(summary_data):
+    """
+    get_report_name Builds the report file name (without date prefix or extension), e.g. cyfrin-securitize-tempo-async-vault-v1.0
+    """
+    title_text = build_title_text(summary_data['team_name'], summary_data['project_name'])
+    return f"cyfrin-{slugify(title_text)}-v{summary_data['report_version']}"
+
+
 def join_with_ampersand(parts):
     if len(parts) == 1:
         return parts[0]

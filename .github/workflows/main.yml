@@ -104,10 +104,14 @@ jobs:
       - name: Get the filename
         id: report_name
         run: |
+          cd $GITHUB_WORKSPACE
+          cd ${{ inputs.generator-path }}
+          # e.g. cyfrin-securitize-tempo-async-vault-v1.0, derived from source/summary_information.conf
+          REPORT_SUFFIX=$(python3 -m scripts.report_name)
           if [ -z "${{ inputs.time }}" ]; then
-            REPORT_NAME="${{ env.DATE }}-cyfrin-protocol-v0.0"
+            REPORT_NAME="${{ env.DATE }}-${REPORT_SUFFIX}"
           else
-            REPORT_NAME="${{ inputs.time }}-cyfrin-protocol-v0.0"
+            REPORT_NAME="${{ inputs.time }}-${REPORT_SUFFIX}"
           fi
           echo "REPORT_NAME=${REPORT_NAME}" >> $GITHUB_ENV
 

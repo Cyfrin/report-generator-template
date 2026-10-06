@@ -86,3 +86,20 @@ class TestResolveFile:
         written = out.read_text()
         assert "[Dacian](https://x.com/DevDacian)" in written
         assert "[Alexzoid](https://x.com/alexzoid) (Formal Verification)" in written
+
+
+class TestAuditorsJson:
+    """The real source/auditors.json is also read by audit-repo-cloner to invite auditors to audit repos."""
+
+    def test_every_individual_auditor_has_github_field(self):
+        with open(resolve_auditors.AUDITORS_JSON) as f:
+            mapping = json.load(f)
+        missing = [name for name, entry in mapping.items() if "members" not in entry and "github" not in entry]
+        assert missing == [], f"Add a 'github' field (GitHub username) to: {missing}"
+
+    def test_team_members_exist(self):
+        with open(resolve_auditors.AUDITORS_JSON) as f:
+            mapping = json.load(f)
+        for name, entry in mapping.items():
+            for member in entry.get("members", []):
+                assert member in mapping, f"Team '{name}' references unknown member '{member}'"
