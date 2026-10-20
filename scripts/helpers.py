@@ -117,26 +117,31 @@ def markdown_heading_to_latex_hypertarget(heading):
 
 
 def escape_latex_special_chars(text):
-    # Escape LaTeX special characters that can appear in issue titles.
-    # '_' within backticks is handled separately by format_inline_code().
-    replacements = [
-        ('&', '\\&'),
-        ('%', '\\%'),
-        ('$', '\\$'),
-        ('#', '\\#'),
-        ('~', '\\textasciitilde{}'),
-        ('^', '\\textasciicircum{}'),
-    ]
-    for old, new in replacements:
-        text = text.replace(old, new)
-    return text
+    # Escape in a single pass so generated LaTeX commands are not escaped again.
+    replacements = {
+        '\\': r'\textbackslash{}',
+        '{': r'\{',
+        '}': r'\}',
+        '_': r'\_',
+        '&': r'\&',
+        '%': r'\%',
+        '$': r'\$',
+        '#': r'\#',
+        '~': r'\textasciitilde{}',
+        '^': r'\textasciicircum{}',
+    }
+    return ''.join(replacements.get(char, char) for char in text)
 
 
 def format_inline_code(text):
-    # Find sections within backticks and wrap them with \texttt{} while also escaping underscores
-    return re.sub(r'`([^`]+)`',
-                  lambda m: '\\texttt{' + m.group(1).replace('_', '\\_') + '}',
-                  text)
+    # Escape both prose and code before adding LaTeX formatting. In particular,
+    # a bare underscore in prose would otherwise trigger math-mode recovery.
+    parts = re.split(r'`([^`]+)`', text)
+    return ''.join(
+        r'\texttt{' + escape_latex_special_chars(part) + '}'
+        if index % 2 else escape_latex_special_chars(part)
+        for index, part in enumerate(parts)
+    )
 
 
 def calculate_period(review_timeline):
@@ -303,8 +308,7 @@ def get_issues(repository, github, filter_options=None):
         # Iterate through all findings for the current severity
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
-            escaped_title = escape_latex_special_chars(issue_title)
-            prefixed_title = rf"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(escaped_title)}}}"
+            prefixed_title = rf"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(issue_title)}}}"
             status_label = status_label.replace("Report Status: ", "")
             summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\\hline"
             mitigation_table += f"\"{issue_title}\",{status_label},,\n"

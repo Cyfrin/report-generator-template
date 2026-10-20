@@ -3,6 +3,9 @@
 These cover the text/markdown/LaTeX transformations and the date math used
 when generating a report. None of them touch the network, GitHub or pandoc.
 """
+from types import SimpleNamespace
+from unittest.mock import Mock
+
 import pytest
 
 from scripts import helpers
@@ -94,6 +97,12 @@ class TestEscapeLatexSpecialChars:
     def test_plain_text_unchanged(self):
         assert helpers.escape_latex_special_chars("nothing special") == "nothing special"
 
+    def test_escapes_underscores_in_plain_text(self):
+        assert helpers.escape_latex_special_chars("SCALED_UI") == r"SCALED\_UI"
+
+    def test_escapes_backslashes_and_braces_without_reescaping_commands(self):
+        assert helpers.escape_latex_special_chars(r"a\{b_c}") == r"a\textbackslash{}\{b\_c\}"
+
 
 class TestFormatInlineCode:
     def test_wraps_backticks_and_escapes_underscores(self):
@@ -104,6 +113,42 @@ class TestFormatInlineCode:
 
     def test_multiple_segments(self):
         assert helpers.format_inline_code("`a_b` and `c`") == "\\texttt{a\\_b} and \\texttt{c}"
+
+    def test_escapes_plain_text_and_code_exactly_once(self):
+        assert helpers.format_inline_code("SCALED_UI and `DS_TOKEN` & 100%") == (
+            r"SCALED\_UI and \texttt{DS\_TOKEN} \& 100\%"
+        )
+
+    def test_escapes_latex_syntax_inside_code(self):
+        assert helpers.format_inline_code(r"`a\{b_c}^~&%$#`") == (
+            r"\texttt{a\textbackslash{}\{b\_c\}\textasciicircum{}\textasciitilde{}\&\%\$\#}"
+        )
+
+
+def test_summary_title_escapes_prose_and_code_without_changing_link(tmp_path, monkeypatch):
+    for name in ("SOURCE_REPORT", "SEVERITY_COUNTS", "MITIGATION_TABLE", "SUMMARY_TEX"):
+        monkeypatch.setattr(helpers, name, str(tmp_path / name))
+    summary = tmp_path / "SUMMARY_TEX"
+    summary.write_text(
+        "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START\n"
+        "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_END\n"
+    )
+    monkeypatch.setattr(helpers, "get_summary_information", lambda: {"team_name": "Securitize"})
+    monkeypatch.setattr(helpers, "markdown_heading_to_latex_hypertarget", lambda _: "scaled_ui")
+    issue = SimpleNamespace(
+        number=1, title="`DSToken` enables SCALED_UI with `DS_TOKEN` & 100%",
+        body="Description", state="open", pull_request=None, html_url="https://example.com/1",
+        labels=[SimpleNamespace(name=name) for name in
+                ("Severity: Low Risk", "Report Status: Open")],
+    )
+    github = Mock()
+    github.get_repo.return_value.get_issues.return_value = [issue]
+
+    assert helpers.get_issues("owner/repo", github) == 1
+    assert (
+        r"\hyperlink{scaled_ui}{[L-1] \texttt{DSToken} enables SCALED\_UI "
+        r"with \texttt{DS\_TOKEN} \& 100\%} & Open \\"
+    ) in summary.read_text()
 
 
 class TestCalculatePeriod:
