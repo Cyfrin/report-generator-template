@@ -4,10 +4,6 @@ TODO - document any centralization risks here such as upgradeable contracts, adm
 
 > The protocol by its regulated nature is highly centralized with protocol admins having complete power including the ability to upgrade many contracts to new implementations; protocol users must place complete trust in the protocol admins when engaging with the protocol. One benefit to this is that even if a serious bug should be discovered once the protocol is live, protocol admins will in many cases be able to upgrade the relevant contracts and resolve the issue.
 
-## Defensive Improvements
-
-TODO - document any defense-in-depth gaps here such as missing pause, caps, 2-step setters, role separation. Remove section if not required.
-
 ## Protocol Invariants
 
 TODO - use Bastion skill to generate & output invariants here OR remove Protocol Invariants section if it doesn't apply to your audit
