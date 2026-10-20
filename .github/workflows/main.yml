@@ -72,7 +72,7 @@ jobs:
 
       - name: Compile the LaTeX file (1st pass)
         continue-on-error: true
-        uses: dante-ev/latex-action@latest
+        uses: dante-ev/latex-action@f179ced12eed1e0e443f5813c5f138d3f18eff99 # 2025-A
         with:
           working_directory: ./${{ inputs.generator-path }}/working
           root_file: main.tex
@@ -81,7 +81,7 @@ jobs:
 
       - name: Compile the LaTeX file (2nd pass)
         continue-on-error: true
-        uses: dante-ev/latex-action@latest
+        uses: dante-ev/latex-action@f179ced12eed1e0e443f5813c5f138d3f18eff99 # 2025-A
         with:
           working_directory: ./${{ inputs.generator-path }}/working
           root_file: main.tex
@@ -90,7 +90,7 @@ jobs:
 
       - name: Compile the LaTeX file (3rd pass)
         continue-on-error: true
-        uses: dante-ev/latex-action@latest
+        uses: dante-ev/latex-action@f179ced12eed1e0e443f5813c5f138d3f18eff99 # 2025-A
         with:
           working_directory: ./${{ inputs.generator-path }}/working
           root_file: main.tex
