@@ -165,12 +165,17 @@ def calculate_period(review_timeline):
     if start_date > end_date:
         start_date = start_date.replace(year=start_date.year - 1)
 
-    # Calculate workdays
+    # Calculate workdays. Weekends inside the review are skipped, but a review
+    # starting or ending on a weekend means that weekend was worked, so the part
+    # of it within the review counts.
     workdays = 0
     current_date = start_date
 
     while current_date <= end_date:
-        if current_date.weekday() < 5:
+        weekday = current_date.weekday()
+        in_start_weekend = (current_date - start_date).days <= weekday - 5
+        in_end_weekend = (end_date - current_date).days <= 6 - weekday
+        if weekday < 5 or in_start_weekend or in_end_weekend:
             workdays += 1
         current_date += timedelta(days=1)
 

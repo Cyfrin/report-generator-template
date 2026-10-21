@@ -152,17 +152,37 @@ def test_summary_title_escapes_prose_and_code_without_changing_link(tmp_path, mo
 
 
 class TestCalculatePeriod:
-    def test_full_week_excludes_weekend(self):
-        # Jan 1 2024 is a Monday; Jan 1-7 has 5 workdays (Mon-Fri).
-        assert helpers.calculate_period("Jan 1st - Jan 7th, 2024") == 5
+    def test_inner_weekend_excluded(self):
+        # Jan 1 2024 is a Monday; Jan 1-12 is Mon-Fri twice with a weekend between.
+        assert helpers.calculate_period("Jan 1st - Jan 12th, 2024") == 10
 
     def test_single_workday(self):
         assert helpers.calculate_period("Jan 1st - Jan 1st, 2024") == 1
 
+    def test_weekend_only_review(self):
+        # Jan 6-7 2024 is Sat-Sun.
+        assert helpers.calculate_period("Jan 6th - Jan 7th, 2024") == 2
+
+    def test_single_weekend_day(self):
+        assert helpers.calculate_period("Jan 7th - Jan 7th, 2024") == 1
+
+    def test_ending_on_weekend_counts_it(self):
+        assert helpers.calculate_period("Jan 1st - Jan 7th, 2024") == 7  # Mon-Sun
+        assert helpers.calculate_period("Jan 5th - Jan 7th, 2024") == 3  # Fri-Sun
+        assert helpers.calculate_period("Jan 5th - Jan 6th, 2024") == 2  # Fri-Sat
+
+    def test_starting_on_weekend_counts_it(self):
+        assert helpers.calculate_period("Jan 6th - Jan 12th, 2024") == 7  # Sat-Fri
+        assert helpers.calculate_period("Jan 7th - Jan 12th, 2024") == 6  # Sun-Fri
+
+    def test_boundary_and_inner_weekends(self):
+        # Sat Jan 6 - Sun Jan 21 2024: both boundary weekends count, the inner one doesn't.
+        assert helpers.calculate_period("Jan 6th - Jan 21st, 2024") == 14
+
     def test_year_boundary_rolls_start_back(self):
-        # Dec 31 2024 > Jan 1 2024, so start rolls back to Dec 31 2023 (a Sunday).
-        # Range Dec 31 2023 (Sun) -> Jan 1 2024 (Mon) has a single workday.
-        assert helpers.calculate_period("Dec 31st - Jan 1st, 2024") == 1
+        # Dec 29 2024 > Jan 2 2024, so start rolls back to Dec 29 2023 (a Friday).
+        # Range Dec 29 2023 (Fri) -> Jan 2 2024 (Tue) skips the inner weekend.
+        assert helpers.calculate_period("Dec 29th - Jan 2nd, 2024") == 3
 
 
 class TestReplaceInFileContent:
