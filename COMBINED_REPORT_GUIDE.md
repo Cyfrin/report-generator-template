@@ -20,7 +20,7 @@ This was first done for the Myriad audits (March-April 2026), combining 3 audit 
 
 ### 1. `source/summary_information.conf`
 
-Add `[phase_N]` sections below the standard `[summary]` section. Each phase has its own repo, commits, timeline, and project number:
+Add `[phase_N]` sections below the standard `[summary]` section. Each phase has its own repo, commits and timeline:
 
 ```ini
 [summary]
@@ -41,10 +41,8 @@ commit_hash_3 =
 fix_commit_hash_3 =
 review_timeline = <overall start> - <overall end>
 review_methods = Manual Review
-project_number =
 filter_issue_id_list =
 filter_issue_label =
-filter_issue_column =
 
 [phase_1]
 name = Phase 1 Name
@@ -53,7 +51,6 @@ project_github = https://github.com/ClientOrg/client-repo
 commit_hash = <initial commit hash>
 fix_commit_hash = <fix commit hash>
 review_timeline = <start> - <end>
-project_number = <GitHub project number>
 
 [phase_2]
 name = Phase 2 Name
@@ -62,7 +59,6 @@ project_github = https://github.com/ClientOrg/client-repo
 commit_hash = <initial commit hash>
 fix_commit_hash = <fix commit hash>
 review_timeline = <start> - <end>
-project_number = <GitHub project number>
 
 # Add more [phase_N] sections as needed (up to 9 supported)
 ```
@@ -165,7 +161,8 @@ Prerequisites: Python 3, Pandoc, pdflatex (TeX Live / MacTeX).
 
 ## Notes
 
-- The `GITHUB_ACCESS_TOKEN` needs `repo` scope to access private Cyfrin repos. The `read:org` scope is also helpful for project column filtering but not required — without it, the script falls back to fetching all open issues.
+- The `GITHUB_ACCESS_TOKEN` needs `repo` scope to access private Cyfrin repos.
+- Phases audited before the `Cyfrin:` status labels use `Report Status:` labels; `get_issues()` maps these to their `Cyfrin:` equivalents (see `LEGACY_STATUS_LABELS` in `scripts/helpers.py`), so older and newer phases can be combined.
 - Issues from different repos may have overlapping issue numbers (`#1`, `#2`, etc.). Internal `#xx` link replacement is done per-repo before merging, so there are no collisions.
 - The summary findings table entries (`[H-1]`, `[L-2]`, etc.) are numbered sequentially across all phases — they don't indicate which phase a finding came from. The TOC does show this grouping though.
 - If the number of phases exceeds 3, the Audit Phases table layout will need adjustment (narrower columns or multiple rows).

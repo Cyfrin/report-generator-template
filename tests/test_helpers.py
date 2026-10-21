@@ -139,7 +139,7 @@ def test_summary_title_escapes_prose_and_code_without_changing_link(tmp_path, mo
         number=1, title="`DSToken` enables SCALED_UI with `DS_TOKEN` & 100%",
         body="Description", state="open", pull_request=None, html_url="https://example.com/1",
         labels=[SimpleNamespace(name=name) for name in
-                ("Severity: Low Risk", "Report Status: Open")],
+                ("Severity: Low Risk", "Cyfrin: Peer Reviewed")],
     )
     github = Mock()
     github.get_repo.return_value.get_issues.return_value = [issue]
@@ -149,6 +149,82 @@ def test_summary_title_escapes_prose_and_code_without_changing_link(tmp_path, mo
         r"\hyperlink{scaled_ui}{[L-1] \texttt{DSToken} enables SCALED\_UI "
         r"with \texttt{DS\_TOKEN} \& 100\%} & Open \\"
     ) in summary.read_text()
+
+
+
+def _get_issues_summary(tmp_path, monkeypatch, issue_labels):
+    """Runs get_issues() over issues with the given labels and returns the summary table and mitigation CSV."""
+    for name in ("SOURCE_REPORT", "SEVERITY_COUNTS", "MITIGATION_TABLE", "SUMMARY_TEX"):
+        monkeypatch.setattr(helpers, name, str(tmp_path / name))
+    (tmp_path / "SUMMARY_TEX").write_text(
+        "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START\n"
+        "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_END\n"
+    )
+    monkeypatch.setattr(helpers, "get_summary_information", lambda: {"team_name": "Securitize"})
+    issues = [
+        SimpleNamespace(
+            number=number, title=f"Finding {number}", body="Description", state="open", pull_request=None,
+            html_url=f"https://example.com/{number}", labels=[SimpleNamespace(name=name) for name in labels],
+        )
+        for number, labels in enumerate(issue_labels, start=1)
+    ]
+    github = Mock()
+    # get_issues() iterates in reverse, as the API returns the newest issue first
+    github.get_repo.return_value.get_issues.return_value = issues[::-1]
+
+    assert helpers.get_issues("owner/repo", github) == len(issues)
+    return (tmp_path / "SUMMARY_TEX").read_text(), (tmp_path / "MITIGATION_TABLE").read_text()
+
+
+class TestReportStatus:
+    def test_draft_and_peer_reviewed_reported_as_open(self, tmp_path, monkeypatch):
+        summary, mitigation = _get_issues_summary(tmp_path, monkeypatch, [
+            ("Severity: Low Risk", "Cyfrin: Draft"),
+            ("Severity: Low Risk", "Cyfrin: Peer Reviewed"),
+        ])
+        assert "Finding 1} & Open" in summary
+        assert "Finding 2} & Open" in summary
+        assert '"Finding 1",Open,,' in mitigation
+        assert '"Finding 2",Open,,' in mitigation
+
+    def test_final_statuses_drop_prefix(self, tmp_path, monkeypatch):
+        summary, mitigation = _get_issues_summary(tmp_path, monkeypatch, [
+            ("Severity: Low Risk", "Cyfrin: Resolved"),
+            ("Severity: Low Risk", "Cyfrin: Partially Resolved"),
+            ("Severity: Low Risk", "Cyfrin: Acknowledged"),
+        ])
+        assert "Finding 1} & Resolved" in summary
+        assert "Finding 2} & Partially Resolved" in summary
+        assert '"Finding 3",Acknowledged,,' in mitigation
+
+    def test_draft_issues_trigger_warning(self, tmp_path, monkeypatch, capsys):
+        _get_issues_summary(tmp_path, monkeypatch, [
+            ("Severity: Low Risk", "Cyfrin: Draft"),
+            ("Severity: Low Risk", "Cyfrin: Resolved"),
+            ("Severity: Low Risk", "Cyfrin: Draft"),
+        ])
+        assert "WARNING: 2 unreviewed Draft issues included: #1, #3" in capsys.readouterr().out
+
+    def test_no_warning_without_draft_issues(self, tmp_path, monkeypatch, capsys):
+        _get_issues_summary(tmp_path, monkeypatch, [("Severity: Low Risk", "Cyfrin: Peer Reviewed")])
+        assert "WARNING" not in capsys.readouterr().out
+
+    def test_legacy_status_labels_mapped(self, tmp_path, monkeypatch):
+        summary, _ = _get_issues_summary(tmp_path, monkeypatch, [
+            ("Severity: Low Risk", "Report Status: Open"),
+            ("Severity: Low Risk", "Report Status: Partially Resolved"),
+        ])
+        assert "Finding 1} & Open" in summary
+        assert "Finding 2} & Partially Resolved" in summary
+
+    def test_counts_resolved_and_acknowledged(self, tmp_path, monkeypatch):
+        _get_issues_summary(tmp_path, monkeypatch, [
+            ("Severity: Low Risk", "Cyfrin: Resolved"),
+            ("Severity: Low Risk", "Report Status: Acknowledged"),
+            ("Severity: Low Risk", "Cyfrin: Peer Reviewed"),
+        ])
+        counts = (tmp_path / "SEVERITY_COUNTS").read_text()
+        assert "low = 3\nlow_resolved = 1\nlow_acknowledged = 1\n" in counts
 
 
 class TestCalculatePeriod:

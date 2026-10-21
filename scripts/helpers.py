@@ -25,11 +25,23 @@ MITIGATION_TABLE = OUTPUT_PATH + 'mitigation_table.csv'
 SEVERITY_LABELS = ['Severity: Critical Risk', 'Severity: High Risk', 'Severity: Medium Risk', 'Severity: Low Risk', 'Severity: Informational', 'Severity: Gas Optimization']
 
 # Possible status labels from github issues
-STATUS_LABELS = ['Report Status: Open', 'Report Status: Acknowledged', 'Report Status: Resolved', 'Report Status: Partially Resolved']
+DRAFT_STATUS_LABEL = 'Cyfrin: Draft'
+STATUS_LABELS = [DRAFT_STATUS_LABEL, 'Cyfrin: Peer Reviewed', 'Cyfrin: Acknowledged', 'Cyfrin: Resolved', 'Cyfrin: Partially Resolved']
 
 # Status labels grouped as they are reported in the "Issues Found" table
-RESOLVED_STATUS_LABELS = ['Report Status: Resolved', 'Report Status: Partially Resolved']
-ACKNOWLEDGED_STATUS_LABELS = ['Report Status: Acknowledged']
+RESOLVED_STATUS_LABELS = ['Cyfrin: Resolved', 'Cyfrin: Partially Resolved']
+ACKNOWLEDGED_STATUS_LABELS = ['Cyfrin: Acknowledged']
+
+# Findings which haven't been resolved or acknowledged yet are reported as "Open"
+OPEN_STATUS_LABELS = [DRAFT_STATUS_LABEL, 'Cyfrin: Peer Reviewed']
+
+# Status labels used by audit repos created before the "Cyfrin:" labels, e.g. when a combined report includes an older phase
+LEGACY_STATUS_LABELS = {
+    'Report Status: Open': 'Cyfrin: Peer Reviewed',
+    'Report Status: Acknowledged': 'Cyfrin: Acknowledged',
+    'Report Status: Resolved': 'Cyfrin: Resolved',
+    'Report Status: Partially Resolved': 'Cyfrin: Partially Resolved',
+}
 
 # Little helper to get issues with a certain label
 def get_issue_count(dict, label):
@@ -43,6 +55,13 @@ def get_issue_count(dict, label):
 # Little helper to count the issues of a severity whose status is in the given group
 def get_status_count(summary_of_findings, severity_label, status_labels):
     return sum(1 for _, status in summary_of_findings.get(severity_label, []) if status in status_labels)
+
+
+# Little helper to get the status as printed in the report
+def get_report_status(status_label):
+    if status_label in OPEN_STATUS_LABELS:
+        return 'Open'
+    return status_label.replace('Cyfrin: ', '')
 
 
 def title_to_link(title):
@@ -212,6 +231,9 @@ def get_issues(repository, github, filter_options=None):
     # Dictionary for summary of findings
     summary_of_findings: dict[str, list[tuple[str, str]]] = {}
 
+    # Draft issues haven't been peer reviewed yet but are still included in the report
+    draft_issue_numbers: list[int] = []
+
     # Set up filter options
     filter_options = filter_options or {}
     filter_issue_ids = filter_options.get('issue_ids', [])
@@ -237,11 +259,13 @@ def get_issues(repository, github, filter_options=None):
                 # get issue number and title for replacing links
                 issues_by_number[issue.number] = issue.title
 
+                label_names = [LEGACY_STATUS_LABELS.get(label.name, label.name) for label in issue.labels]
+
                 # filter issue labels for only severity labels
-                severity_labels_in_issue = [label.name for label in issue.labels if label.name in SEVERITY_LABELS]
+                severity_labels_in_issue = [name for name in label_names if name in SEVERITY_LABELS]
 
                 # filter issue labels for only status labels
-                status_labels_in_issue = [label.name for label in issue.labels if label.name in STATUS_LABELS]
+                status_labels_in_issue = [name for name in label_names if name in STATUS_LABELS]
 
                 assert len(severity_labels_in_issue) == 1, f"Issue {issue.html_url} has more than one (or no) severity label."
                 assert len(status_labels_in_issue) == 1, f"Issue {issue.html_url} has more than one (or no) status label."
@@ -252,6 +276,9 @@ def get_issues(repository, github, filter_options=None):
                 issue_dict[severity_label].append(f"\n\n### {issue.title}\n\n{issue.body}\n")
 
                 status_label = status_labels_in_issue[0]
+                if status_label == DRAFT_STATUS_LABEL:
+                    draft_issue_numbers.append(issue.number)
+
                 # Append issue title and status to summary of findings dictionary
                 if severity_label not in summary_of_findings:
                     summary_of_findings[severity_label] = []
@@ -260,6 +287,9 @@ def get_issues(repository, github, filter_options=None):
     except Exception as e:
         print(f"Couldn't fetch the issues from repository {repository}.\nError:{e} \n")
         return 0
+
+    if draft_issue_numbers:
+        print(f"WARNING: {len(draft_issue_numbers)} unreviewed Draft issues included: {', '.join(f'#{number}' for number in draft_issue_numbers)}")
 
     issue_dict = replace_internal_links(issue_dict, issues_by_number)
 
@@ -314,9 +344,9 @@ def get_issues(repository, github, filter_options=None):
         for counter, (issue_title, status_label) in enumerate(summary_of_findings[label], start=1):
             latex_hypertarget = markdown_heading_to_latex_hypertarget("### " + issue_title)
             prefixed_title = rf"\hyperlink{{{latex_hypertarget}}}{{[{prefix}{str(counter).zfill(fill)}] {format_inline_code(issue_title)}}}"
-            status_label = status_label.replace("Report Status: ", "")
-            summary_findings_table += f"{prefixed_title} & {status_label} \\\\\n\\hline"
-            mitigation_table += f"\"{issue_title}\",{status_label},,\n"
+            report_status = get_report_status(status_label)
+            summary_findings_table += f"{prefixed_title} & {report_status} \\\\\n\\hline"
+            mitigation_table += f"\"{issue_title}\",{report_status},,\n"
 
     # Replace the placeholder in the SUMMARY_TEX file
     placeholder_start = "% __PLACEHOLDER__SUMMARY_OF_FINDINGS_START"
