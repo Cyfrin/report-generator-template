@@ -64,11 +64,36 @@
 \usepackage{calc}
 \usepackage{ragged2e}
 
-% Unicode fallbacks for pdflatex (✓/✗ used in invariant tables)
+% Unicode fallbacks for pdflatex, which otherwise drops these characters (✓/✗ and math symbols used
+% in invariant tables and findings)
 \usepackage{amssymb}
 \usepackage{newunicodechar}
 \newunicodechar{✓}{\ensuremath{\checkmark}}
 \newunicodechar{✗}{\ensuremath{\times}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+\newunicodechar{∑}{\ensuremath{\Sigma}}
+\newunicodechar{∞}{\ensuremath{\infty}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\notin}}
+\newunicodechar{⊆}{\ensuremath{\subseteq}}
+\newunicodechar{∪}{\ensuremath{\cup}}
+\newunicodechar{∩}{\ensuremath{\cap}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{∨}{\ensuremath{\vee}}
+\newunicodechar{⌊}{\ensuremath{\lfloor}}
+\newunicodechar{⌋}{\ensuremath{\rfloor}}
+\newunicodechar{⌈}{\ensuremath{\lceil}}
+\newunicodechar{⌉}{\ensuremath{\rceil}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
 
 % Adding breaklines=true to minted's settings seems to produce some errors related to fonts. This is
 % the only fix that worked.
